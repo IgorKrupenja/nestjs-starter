@@ -1,7 +1,7 @@
 FROM node:22.14-alpine AS base
 
-# Enable pnpm
 RUN corepack enable pnpm
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 FROM base AS dependencies
 
@@ -25,4 +25,7 @@ COPY --from=build /app/node_modules ./node_modules
 COPY prisma ./prisma
 COPY package.json ./
 
-CMD [ "npm", "run", "start:prod" ]
+RUN chown -R appuser:appgroup /app
+USER appuser
+
+CMD [ "pnpm", "run", "start:prod" ]

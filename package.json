@@ -15,7 +15,7 @@
     "build": "nest build",
     "dev": "NODE_ENV=development nest start  --watch",
     "start:debug": "NODE_ENV=development nest start --debug --watch",
-    "start:prod": "NODE_ENV=production npx prisma migrate deploy && node dist/main.js"
+    "start:prod": "NODE_ENV=production pnpm exec prisma migrate deploy && node dist/main.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.11",
