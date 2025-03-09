@@ -4,8 +4,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "format": "prettier \"{src,test}/**/*.{ts,json,yml}\" --write",
-    "format:check": "prettier \"{src,test}/**/*.{ts,json,yml}\" --check",
+    "format": "prettier \"**/*.{ts,json,yml}\" --write",
+    "format:check": "prettier \"**/*.{ts,json,yml}\" --check",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix --max-warnings 0",
     "lint:check": "eslint \"{src,test}/**/*.ts\" --max-warnings 0",
     "test": "vitest",
