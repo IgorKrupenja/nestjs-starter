@@ -27,6 +27,7 @@
     "class-validator": "^0.14.1",
     "compression": "^1.8.0",
     "nestjs-prisma": "^0.25.0",
+    "prisma": "^6.4.1",
     "rxjs": "^7.8.2"
   },
   "devDependencies": {
@@ -50,7 +51,6 @@
     "eslint-plugin-unused-imports": "^4.1.4",
     "globals": "^16.0.0",
     "prettier": "^3.5.3",
-    "prisma": "^6.4.1",
     "source-map-support": "^0.5.21",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
