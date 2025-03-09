@@ -16,7 +16,7 @@ jobs:
   lint-check:
     uses: ./.github/workflows/run-check.yml
     with:
-      command: pnpm run lint:check
+      command: pnpm exec prisma generate && pnpm run lint:check
   test:
     uses: ./.github/workflows/run-check.yml
     with:
