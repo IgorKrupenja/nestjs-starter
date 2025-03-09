@@ -4,8 +4,18 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import unusedImports from 'eslint-plugin-unused-imports';
 import * as importPlugin from 'eslint-plugin-import';
+import vitest from "@vitest/eslint-plugin";
 
 export default tseslint.config(
+  {
+    files: ["**/*.spec.ts"],
+    plugins: {
+      vitest
+    },
+    rules: {
+      ...vitest.configs.recommended.rules,
+    },
+  },
   {
     ignores: ['eslint.config.mjs'],
   },
@@ -39,6 +49,7 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
+      '@typescript-eslint/unbound-method': 'off',
       'no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': [
