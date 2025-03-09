@@ -1,0 +1,12 @@
+{
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
+  },
+  "editor.formatOnSave": true,
+  "[yaml][github-actions-workflow][typescript][json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "vitest.disableWorkspaceWarning": true
+}

@@ -1,0 +1,30 @@
+name: Run api checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, ready_for_review, reopened, synchronize]
+concurrency:
+  group: ${{ github.ref }}-checks
+  cancel-in-progress: true
+
+jobs:
+  format-check:
+    uses: ./.github/workflows/run-check.yml
+    with:
+      command: pnpm run format:check
+  lint-check:
+    uses: ./.github/workflows/run-check.yml
+    with:
+      command: pnpm run lint:check
+  test:
+    uses: ./.github/workflows/run-check.yml
+    with:
+      command: pnpm exec prisma generate && pnpm run test
+  build:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build .

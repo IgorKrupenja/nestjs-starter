@@ -1,0 +1,11 @@
+name: nestjs-starter
+
+services:
+  db:
+    image: postgres:17.4
+    container_name: postgres
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=nestjs_starter
+    ports:
+      - '5432:5432'
