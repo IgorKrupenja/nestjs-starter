@@ -28,4 +28,5 @@ COPY package.json ./
 RUN chown -R appuser:appgroup /app
 USER appuser
 
+EXPOSE 3000
 CMD [ "pnpm", "run", "start:prod" ]
