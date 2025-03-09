@@ -60,11 +60,10 @@ pnpm run format
 **You should NEVER use this to run locally**. This is only for testing the Docker image.
 
 ```bash
-docker build -t nestjs-starter .
+docker build -t nestjs-starter . --no-cache
 
 docker run \
     -p 3000:3000 \
-    --name nestjs-starter \
     -e DATABASE_URL="postgresql://postgres:postgres@host.docker.internal:5432/nestjs_starter?schema=starter" \
     nestjs-starter
 ```
