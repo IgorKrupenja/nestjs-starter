@@ -23,6 +23,12 @@ importers:
       '@prisma/client':
         specifier: ^6.4.1
         version: 6.4.1(prisma@6.4.1(typescript@5.8.2))(typescript@5.8.2)
+      '@swc/cli':
+        specifier: 0.6.0
+        version: 0.6.0(@swc/core@1.11.8)(chokidar@4.0.3)
+      '@swc/core':
+        specifier: ^1.11.8
+        version: 1.11.8
       class-transformer:
         specifier: ^0.5.1
         version: 0.5.1
@@ -54,12 +60,6 @@ importers:
       '@nestjs/testing':
         specifier: ^11.0.11
         version: 11.0.11(@nestjs/common@11.0.11(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.11)(@nestjs/platform-express@11.0.11)
-      '@swc/cli':
-        specifier: 0.6.0
-        version: 0.6.0(@swc/core@1.11.8)(chokidar@4.0.3)
-      '@swc/core':
-        specifier: ^1.11.8
-        version: 1.11.8
       '@types/compression':
         specifier: ^1.7.5
         version: 1.7.5
