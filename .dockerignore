@@ -47,5 +47,6 @@ docker-compose.yml
 *.log
 tmp
 
+
 # sst
-# .sst
+.sst
