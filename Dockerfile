@@ -16,6 +16,7 @@ WORKDIR /app
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
 RUN pnpm install --frozen-lockfile
+RUN ls -a
 RUN pnpm run build
 
 FROM node:22.14-alpine AS deploy
