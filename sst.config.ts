@@ -15,6 +15,7 @@ export default $config({
       },
     };
   },
+  // eslint-disable-next-line @typescript-eslint/require-await
   async run() {
     const vpc = new sst.aws.Vpc('MyVpc');
     const cluster = new sst.aws.Cluster('MyCluster', { vpc });

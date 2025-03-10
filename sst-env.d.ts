@@ -13,11 +13,6 @@ declare module "sst" {
       "type": "sst.aws.Postgres"
       "username": string
     }
-    "MyService": {
-      "service": string
-      "type": "sst.aws.Service"
-      "url": string
-    }
     "MyVpc": {
       "type": "sst.aws.Vpc"
     }
