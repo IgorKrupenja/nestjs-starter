@@ -29,7 +29,7 @@ export default $config({
       },
     });
 
-    const DATABASE_URL = $interpolate`postgresql://postgres:postgres@localhost:5432/nestjs_starter?schema=starter`;
+    const DATABASE_URL = $interpolate`postgresql://${rds.username}:${rds.password}@${rds.host}:${rds.port}/${rds.database}`;
 
     new sst.aws.Service('MyService', {
       cluster,
