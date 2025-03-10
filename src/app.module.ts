@@ -6,6 +6,16 @@ import { PostModule } from './post/post.module';
 
 const env = process.env.NODE_ENV;
 
+// const pool = new Pool({
+//   host: Resource.MyPostgres.host,
+//   port: Resource.MyPostgres.port,
+//   user: Resource.MyPostgres.username,
+//   password: Resource.MyPostgres.password,
+//   database: Resource.MyPostgres.database,
+// });
+
+// const rds = Resource.MyPostgres;
+
 @Module({
   imports: [
     PostModule,
@@ -16,6 +26,7 @@ const env = process.env.NODE_ENV;
       isGlobal: true,
       prismaServiceOptions: {
         prismaOptions: {
+          // datasourceUrl: `postgresql://${rds.username}:${rds.password}@${rds.host}:${rds.port}/${rds.database}`,
           log:
             env === 'production'
               ? [
