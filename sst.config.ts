@@ -8,12 +8,14 @@ export default $config({
       removal: input?.stage === 'production' ? 'retain' : 'remove',
       protect: ['production'].includes(input?.stage),
       home: 'aws',
-      // todo https? -- added below but need to test
-      // todo prisma logs in prod visible
-      // todo gh actions deploy
+      // todo swagger? https://docs.nestjs.com/openapi/introduction
+      // todo custom domain https://sst.dev/docs/custom-domains/
+      // todo prisma logs in prod visible - b/c env is dev?
+      // todo gh actions deploy https://craig.madethis.co.uk/2024/sst-github-actions
+      // todo readme
       providers: {
         aws: {
-          profile: input.stage,
+          profile: input.stage === 'production' ? 'production' : 'dev',
         },
       },
     };
@@ -40,10 +42,7 @@ export default $config({
       link: [rds],
       environment: { DATABASE_URL },
       loadBalancer: {
-        rules: [
-          { listen: '80/http', redirect: '443/https' },
-          { listen: '443/https', forward: '3000/http' },
-        ],
+        rules: [{ listen: '80/http', forward: '3000/http' }],
       },
       dev: {
         command: 'pnpm dev',
