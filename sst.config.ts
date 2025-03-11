@@ -14,7 +14,7 @@ export default $config({
       // todo custom domain https://sst.dev/docs/custom-domains/
       // todo prisma logs in prod visible - b/c env is dev?
       // todo gh actions deploy https://craig.madethis.co.uk/2024/sst-github-actions
-      // todo readme
+      // todo readme - also mention CI/CD
       providers: {
         aws: {
           profile: input.stage === 'production' ? `${name}-production` : `${name}-dev`,
