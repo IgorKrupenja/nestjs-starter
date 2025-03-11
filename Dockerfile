@@ -26,9 +26,10 @@ COPY --from=dependencies /app/node_modules ./node_modules
 COPY prisma ./prisma
 COPY package.json ./
 
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-RUN chown -R appuser:appgroup /app
-USER appuser
+RUN chown -R node:node /app
+USER node
+
+ENV NO_COLOR=true
 
 EXPOSE 3000
 CMD [ "npm", "run", "start:prod" ]

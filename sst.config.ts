@@ -8,9 +8,12 @@ export default $config({
       removal: input?.stage === 'production' ? 'retain' : 'remove',
       protect: ['production'].includes(input?.stage),
       home: 'aws',
+      // todo https? -- added below but need to test
+      // todo prisma logs in prod visible
+      // todo gh actions deploy
       providers: {
         aws: {
-          profile: input.stage === 'production' ? 'personal-production' : 'personal-dev',
+          profile: input.stage,
         },
       },
     };
@@ -37,11 +40,15 @@ export default $config({
       link: [rds],
       environment: { DATABASE_URL },
       loadBalancer: {
-        ports: [{ listen: '80/http', forward: '3000/http' }],
+        rules: [
+          { listen: '80/http', redirect: '443/https' },
+          { listen: '443/https', forward: '3000/http' },
+        ],
       },
       dev: {
         command: 'pnpm dev',
       },
+      capacity: 'spot',
     });
   },
 });
