@@ -21,9 +21,9 @@ export default $config({
   },
   // eslint-disable-next-line @typescript-eslint/require-await
   async run() {
-    const vpc = new sst.aws.Vpc('MyVpc');
-    const cluster = new sst.aws.Cluster('MyCluster', { vpc });
-    const rds = new sst.aws.Postgres('MyPostgres', {
+    const vpc = new sst.aws.Vpc('StarterVpc');
+    const cluster = new sst.aws.Cluster('StarterCluster', { vpc });
+    const rds = new sst.aws.Postgres('StarterPostgres', {
       vpc,
       dev: {
         username: 'postgres',
@@ -36,7 +36,7 @@ export default $config({
 
     const DATABASE_URL = $interpolate`postgresql://${rds.username}:${rds.password}@${rds.host}:${rds.port}/${rds.database}`;
 
-    new sst.aws.Service('MyService', {
+    new sst.aws.Service('StarterService', {
       cluster,
       link: [rds],
       environment: { DATABASE_URL },
@@ -46,7 +46,7 @@ export default $config({
       dev: {
         command: 'pnpm dev',
       },
-      capacity: 'spot',
+      capacity: $app.stage === 'production' ? undefined : 'spot',
     });
   },
 });
