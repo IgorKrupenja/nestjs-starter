@@ -5,6 +5,7 @@ import { PrismaModule, providePrismaClientExceptionFilter } from 'nestjs-prisma'
 import { PostModule } from './post/post.module';
 
 const env = process.env.NODE_ENV;
+console.log('IGOR prisma env', env);
 
 @Module({
   imports: [

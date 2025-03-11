@@ -10,9 +10,6 @@ export default $config({
       removal: input?.stage === 'production' ? 'retain' : 'remove',
       protect: ['production'].includes(input?.stage),
       home: 'aws',
-      // todo swagger? https://docs.nestjs.com/openapi/introduction
-      // todo custom domain https://sst.dev/docs/custom-domains/
-      // todo prisma logs in prod visible - b/c env is dev?
       // todo gh actions deploy https://craig.madethis.co.uk/2024/sst-github-actions
       // todo readme - also mention CI/CD
       providers: {
