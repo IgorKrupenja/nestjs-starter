@@ -12,9 +12,9 @@ async function bootstrap(): Promise<void> {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
 
   const prismaService = app.get(PrismaService);
-  const logger = new Logger('PrismaService');
+  const prismaLogger = new Logger('PrismaService');
   prismaService.$on('query', (e) => {
-    logger.log(e);
+    prismaLogger.log(e);
   });
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
@@ -22,9 +22,8 @@ async function bootstrap(): Promise<void> {
   await app.listen(3000);
 
   if (process.env.NODE_ENV === 'development') {
-    const bootstrapLogger = new Logger('bootstrap');
-    bootstrapLogger.log(`Listening on ${await app.getUrl()}`);
-    bootstrapLogger.log('igor', process.env.DATABASE_URL);
+    const logger = new Logger('bootstrap');
+    logger.log(`Listening on ${await app.getUrl()}`);
   }
 }
 
