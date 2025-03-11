@@ -1,10 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./.sst/platform/config.d.ts" />
 
+const name = 'nestjs-starter';
+
 export default $config({
   app(input) {
     return {
-      name: 'nestjs-starter',
+      name,
       removal: input?.stage === 'production' ? 'retain' : 'remove',
       protect: ['production'].includes(input?.stage),
       home: 'aws',
@@ -15,7 +17,7 @@ export default $config({
       // todo readme
       providers: {
         aws: {
-          profile: input.stage === 'production' ? 'production' : 'dev',
+          profile: input.stage === 'production' ? `${name}-production` : `${name}-dev`,
         },
       },
     };
