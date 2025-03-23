@@ -13,6 +13,7 @@ export default $config({
       // todo gh actions deploy https://craig.madethis.co.uk/2024/sst-github-actions
       // todo readme - also mention CI/CD
       // todo simplify "Set up the project" in Readme, make setup script more prominent
+      // todo package update error
       providers: {
         aws: {
           profile: input.stage === 'production' ? `${name}-production` : `${name}-dev`,
