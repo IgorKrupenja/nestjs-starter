@@ -30,7 +30,7 @@
     "nestjs-prisma": "^0.25.0",
     "prisma": "^6.5.0",
     "rxjs": "^7.8.2",
-    "sst": "3.10.8"
+    "sst": "3.10.11"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
@@ -39,7 +39,7 @@
     "@nestjs/schematics": "^11.0.2",
     "@nestjs/testing": "^11.0.12",
     "@swc/cli": "0.6.0",
-    "@swc/core": "^1.11.11",
+    "@swc/core": "^1.11.13",
     "@types/compression": "^1.7.5",
     "@types/express": "^5.0.1",
     "@types/node": "^22.13.11",
@@ -49,7 +49,7 @@
     "eslint-config-prettier": "^10.1.1",
     "eslint-import-resolver-typescript": "^4.2.2",
     "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-prettier": "^5.2.4",
     "eslint-plugin-unused-imports": "^4.1.4",
     "globals": "^16.0.0",
     "prettier": "^3.5.3",
