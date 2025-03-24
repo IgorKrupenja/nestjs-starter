@@ -13,9 +13,7 @@ async function bootstrap(): Promise<void> {
 
   const prismaService = app.get(PrismaService);
   const prismaLogger = new Logger('PrismaService');
-  prismaService.$on('query', (e) => {
-    prismaLogger.log(e);
-  });
+  prismaService.$on('query', (e) => prismaLogger.log(e));
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
