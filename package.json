@@ -10,6 +10,7 @@
     "format:check": "prettier \"**/*.{ts,json,yml}\" --check",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix --max-warnings 0",
     "lint:check": "eslint \"{src,test}/**/*.ts\" --max-warnings 0",
+    "remove:dev": "sst remove --stage dev && aws ecr delete-repository --repository-name sst-asset --force",
     "sso": "aws sso login --sso-session=personal",
     "start:debug": "NODE_ENV=development nest start --debug --watch",
     "start:prod": "NODE_ENV=production npx prisma migrate deploy && node dist/main.js",
