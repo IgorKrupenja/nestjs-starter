@@ -8,5 +8,6 @@
   "[yaml][github-actions-workflow][typescript][json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "vitest.disableWorkspaceWarning": true
+  "vitest.disableWorkspaceWarning": true,
+  "cSpell.words": ["swcrc", "unplugin"]
 }

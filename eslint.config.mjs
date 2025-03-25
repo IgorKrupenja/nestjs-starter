@@ -17,7 +17,7 @@ export default tseslint.config(
     },
   },
   {
-    ignores: ['eslint.config.mjs'],
+    ignores: ['eslint.config.mjs', 'sst-env.d.ts'],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
