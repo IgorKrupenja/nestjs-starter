@@ -55,6 +55,10 @@ pnpm run lint
 pnpm run format
 ```
 
+## CI/CD
+
+<!-- todo -->
+
 ## Testing Docker image
 
 **You should NEVER use this to run locally**. This is only for testing the Docker image.
