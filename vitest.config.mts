@@ -13,7 +13,6 @@ export default defineConfig({
         'prisma/seeders/seed.ts',
         'src/main.ts',
         '**/*.module.ts',
-        '.eslintrc.js',
       ],
     },
   },

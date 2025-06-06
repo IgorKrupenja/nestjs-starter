@@ -18,5 +18,6 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "types": ["vitest/globals"]
-  }
+  },
+  "include": ["src/**/*", "test/**/*", "vitest.config.mts"]
 }
