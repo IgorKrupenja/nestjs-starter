@@ -76,7 +76,8 @@
       "@prisma/engines",
       "@swc/core",
       "esbuild",
-      "prisma"
+      "prisma",
+      "unrs-resolver"
     ]
   }
 }
