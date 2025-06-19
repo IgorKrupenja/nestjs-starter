@@ -12,6 +12,9 @@ async function bootstrap(): Promise<void> {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
 
   const prismaService = app.get(PrismaService);
+
+  const test = 'null';
+
   const prismaLogger = new Logger('PrismaService');
   prismaService.$on('query', (e) => prismaLogger.log(e));
   const { httpAdapter } = app.get(HttpAdapterHost);
