@@ -23,6 +23,9 @@
       },
       "nursery": {
         "noFloatingPromises": "error"
+      },
+      "performance": {
+        "noBarrelFile": "error"
       }
     }
   },
