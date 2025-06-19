@@ -26,6 +26,9 @@
       },
       "performance": {
         "noBarrelFile": "error"
+      },
+      "style": {
+        "useImportType": "off"
       }
     }
   },
