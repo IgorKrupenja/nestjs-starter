@@ -12,10 +12,12 @@
     "enabled": true,
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineWidth": 100
+    "lineWidth": 100,
+    "includes": ["{src,test}/**/*.{ts,json}"]
   },
   "linter": {
     "enabled": true,
+    "includes": ["{src,test}/**/*.ts"],
     "rules": {
       "recommended": true,
       "suspicious": {
