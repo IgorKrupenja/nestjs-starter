@@ -2,10 +2,11 @@
   "typescript.preferences.importModuleSpecifier": "relative",
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit",
-    "source.organizeImports.biome": "explicit"
+    "source.organizeImports.biome": "explicit",
+    "source.biome": "explicit"
   },
   "editor.formatOnSave": true,
-  "[yaml][github-actions-workflow][typescript][json]": {
+  "[yaml][github-actions-workflow][typescript][json][jsonc]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
   "vitest.disableWorkspaceWarning": true

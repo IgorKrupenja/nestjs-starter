@@ -1,19 +1,19 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from '@nestjs/platform-express';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 import compression from 'compression';
 import { PrismaClientExceptionFilter, PrismaService } from 'nestjs-prisma';
 
 import { AppModule } from './app.module';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    cors: true,
+  });
   app.use(compression());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
 
   const prismaService = app.get(PrismaService);
-
-  const test = 'null';
 
   const prismaLogger = new Logger('PrismaService');
   prismaService.$on('query', (e) => prismaLogger.log(e));
