@@ -9,12 +9,13 @@ import vitest from "@vitest/eslint-plugin";
 export default tseslint.config(
   {
     files: ["**/*.spec.ts"],
-    plugins: {
-      vitest
-    },
-    rules: {
-      ...vitest.configs.recommended.rules,
-    },
+    // todo breaks biome
+    // plugins: {
+    //   vitest
+    // },
+    // rules: {
+    //   ...vitest.configs.recommended.rules,
+    // },
   },
   {
     ignores: ['eslint.config.mjs'],
