@@ -6,10 +6,8 @@
   "scripts": {
     "build": "nest build",
     "dev": "NODE_ENV=development nest start  --watch",
-    "format": "biome format --write",
-    "format:check": "biome format",
-    "lint": "biome lint --write",
-    "lint:check": "biome lint",
+    "lint": "biome check --write",
+    "lint:check": "biome check",
     "start:debug": "NODE_ENV=development nest start --debug --watch",
     "start:prod": "NODE_ENV=production npx prisma migrate deploy && node dist/main.js",
     "test": "vitest",
