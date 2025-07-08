@@ -8,7 +8,7 @@ NestJS starter project. Uses Postgres and Prisma ORM.
 
 This project requires Node 22.14. If you do not have it, the easiest option is to install [nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
-Run the following commands **or just the `./setup.sh` that will do this automatically** (and will also install `nvm` if it's missing).
+Run the following commands **or just the `./setup.sh` that will do this automatically** (and will also install `nvm` if it's missing). This script is especially useful if you are not a Node developer and do not have all the tools ready.
 
 ```bash
 # Install the correct Node version
