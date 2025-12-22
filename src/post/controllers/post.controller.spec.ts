@@ -2,9 +2,9 @@ import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { describe } from 'vitest';
 
-import { PostController } from './post.controller';
-import { PostModel } from '../../generated/prisma/models';
-import { PostService } from '../services/post.service';
+import { PostController } from './post.controller.js';
+import { PostModel } from '../../generated/prisma/models.js';
+import { PostService } from '../services/post.service.js';
 
 describe('PostController', () => {
   let postController: PostController;

@@ -1,15 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { beforeEach, vi } from 'vitest';
+import { DeepMockProxy, mockDeep, mockReset } from 'vitest-mock-extended';
 
-import { PostService } from './post.service';
-// todo why this error?
-import prisma from '../../../test/__mocks__/prisma.service';
-import { Post } from '../../generated/prisma/client';
-import { PrismaService } from '../../prisma.service';
+import { PostService } from './post.service.js';
+import { Post, PrismaClient } from '../../generated/prisma/client.js';
+import { PrismaService } from '../../prisma.service.js';
+
+// Create a mock instance of PrismaClient
+const prisma = mockDeep<PrismaClient>() as unknown as DeepMockProxy<PrismaService>;
 
 describe('PostService', () => {
   let postService: PostService;
 
   beforeEach(async () => {
+    // Reset the mock before each test
+    mockReset(prisma);
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [PostService, { provide: PrismaService, useValue: prisma }],
     }).compile();
