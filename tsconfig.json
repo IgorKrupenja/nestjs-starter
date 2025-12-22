@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    // ES6 modules required by Prisma 7
+    // Must align with "type": "module" in package.json 
+    // and.swcrc config that outputs ES6 modules
     "module": "ES2022",
     "moduleResolution": "bundler",
     "declaration": true,
