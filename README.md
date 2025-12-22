@@ -27,6 +27,17 @@ pnpm exec prisma generate
 pnpm exec prisma db seed
 ```
 
+## Environment Variables
+
+| Variable | Description | Required | Default Value | Recommended Production Value |
+|----------|-------------|----------|---------------|------------------------------|
+| `DATABASE_URL` | PostgreSQL connection string | ✅ Yes | N/A | |
+| `NODE_ENV` | Application environment |  | `development` | `production` |
+| `LOGGER_LOG_LEVELS` | Comma-separated log levels (error, warn, log, debug) |  | `error,warn,log` | `error,warn,log` |
+| `LOGGER_COLORS` | Enable colored console output |  | `false` | `false` |
+
+**[Example `.env` file](.env.example).**
+
 ## Run the project
 
 ```bash
