@@ -9,8 +9,8 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-
 import { PostModel } from '@src/generated/prisma/models';
+
 import { CreatePostDto } from '../dtos/create-post-draft.dto.js';
 import { PostService } from '../services/post.service.js';
 
