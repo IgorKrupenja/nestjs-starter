@@ -12,30 +12,39 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       connectionString: process.env.DATABASE_URL as string,
     });
 
-    const env = process.env.NODE_ENV || 'development';
+    const logLevels = process.env.LOGGER_LOG_LEVELS?.split(',') || ['error', 'warn', 'log'];
+
+    const logConfig: Array<{
+      emit: 'stdout' | 'event';
+      level: 'query' | 'info' | 'warn' | 'error';
+    }> = [];
+
+    if (logLevels.includes('error')) {
+      logConfig.push({ emit: 'stdout', level: 'error' });
+    }
+    if (logLevels.includes('warn')) {
+      logConfig.push({ emit: 'stdout', level: 'warn' });
+    }
+    if (logLevels.includes('log')) {
+      logConfig.push({ emit: 'stdout', level: 'info' });
+    }
+    if (logLevels.includes('debug')) {
+      logConfig.push({ emit: 'event', level: 'query' });
+    }
 
     super({
       adapter,
-      log:
-        env === 'production'
-          ? [
-              { emit: 'stdout', level: 'warn' },
-              { emit: 'stdout', level: 'error' },
-            ]
-          : [
-              { emit: 'event', level: 'query' },
-              { emit: 'stdout', level: 'info' },
-              { emit: 'stdout', level: 'warn' },
-              { emit: 'stdout', level: 'error' },
-            ],
+      log: logConfig,
     });
   }
 
   async onModuleInit(): Promise<void> {
     await this.$connect();
 
-    // In development, log queries using NestJS logger
-    if (process.env.NODE_ENV !== 'production') {
+    const logLevels = process.env.LOGGER_LOG_LEVELS?.split(',') || ['error', 'warn', 'log'];
+
+    // Log queries using NestJS logger when debug is enabled
+    if (logLevels.includes('debug')) {
       this.$on('query' as never, (e: { query: string; params: string; duration: number }) => {
         this.logger.log(`Query: ${e.query}`);
         this.logger.log(`Params: ${e.params}`);
