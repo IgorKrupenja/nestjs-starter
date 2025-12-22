@@ -1,5 +1,5 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import compression from 'compression';
 
@@ -16,7 +16,7 @@ async function bootstrap(): Promise<void> {
   // const prismaLogger = new Logger('PrismaService');
   // // todo errors
   // prismaService.$on('query', (e) => prismaLogger.log(e));
-  const { httpAdapter } = app.get(HttpAdapterHost);
+  // const { httpAdapter } = app.get(HttpAdapterHost);
   // Transform Prisma errors into appropriate HTTP responses (e.g., P2002 → 409 Conflict)
   // Otherwise, 500 would be returned
   // app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));

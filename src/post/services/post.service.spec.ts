@@ -4,7 +4,7 @@ import { DeepMockProxy, mockDeep, mockReset } from 'vitest-mock-extended';
 
 import { PostService } from './post.service.js';
 import { Post, PrismaClient } from '../../generated/prisma/client.js';
-import { PrismaService } from '../../prisma.service.js';
+import { PrismaService } from '../../prisma/services/prisma.service.js';
 
 // Create a mock instance of PrismaClient
 const prisma = mockDeep<PrismaClient>() as unknown as DeepMockProxy<PrismaService>;
