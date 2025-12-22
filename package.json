@@ -23,12 +23,9 @@
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.10",
     "@nestjs/platform-express": "^11.1.10",
-    "@prisma/client": "^7.2.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",
     "compression": "^1.8.1",
-    "nestjs-prisma": "^0.26.0",
-    "prisma": "^7.2.0",
     "rxjs": "^7.8.2"
   },
   "devDependencies": {
@@ -62,9 +59,6 @@
     "vitest": "^4.0.16",
     "vitest-mock-extended": "^3.1.0"
   },
-  "prisma": {
-    "seed": "ts-node prisma/seeders/seed.ts"
-  },
   "engines": {
     "node": "22.21.0",
     "pnpm": "10.26.1"
@@ -73,11 +67,8 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "@nestjs/core",
-      "@prisma/client",
-      "@prisma/engines",
       "@swc/core",
       "esbuild",
-      "prisma",
       "unrs-resolver"
     ]
   }
