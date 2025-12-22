@@ -2,6 +2,7 @@ name: nestjs-starter
 
 services:
   db:
+    # todo upgrade version
     image: postgres:17.4
     container_name: postgres
     environment:
