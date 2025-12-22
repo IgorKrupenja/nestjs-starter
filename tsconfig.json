@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -19,5 +20,5 @@
     "noFallthroughCasesInSwitch": false,
     "types": ["vitest/globals"]
   },
-  "include": ["src/**/*", "test/**/*", "vitest.config.mts", "prisma.config.ts"]
+  "include": ["src/**/*", "test/**/*", "vitest.config.mts", "prisma.config.ts", "prisma/**/*"]
 }
