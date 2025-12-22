@@ -43,10 +43,16 @@ pnpm run test
 pnpm run test:cov
 ```
 
-## Lint, format, import sort
+## Lint
 
 ```bash
 pnpm run lint
+```
+
+## Format
+
+```bash
+pnpm run format
 ```
 
 ## Testing Docker image

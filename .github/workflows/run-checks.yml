@@ -9,17 +9,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  format-check:
+    uses: ./.github/workflows/run-check.yml
+    with:
+      command: pnpm run format:check
   lint-check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Biome
-        uses: biomejs/setup-biome@v2
-        with:
-          version: latest
-      - name: Run lint
-        run: biome ci .
+    uses: ./.github/workflows/run-check.yml
+    with:
+      command: pnpm exec prisma generate && pnpm run lint:check
   test:
     uses: ./.github/workflows/run-check.yml
     with:

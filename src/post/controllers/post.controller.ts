@@ -26,27 +26,27 @@ export class PostController {
   }
 
   @Get('/')
-  getPublishedPosts(): Promise<PostModel[]> {
+  async getPublishedPosts(): Promise<PostModel[]> {
     return this.postService.getPublishedPosts();
   }
 
   @Get('/search/:searchString')
-  getFilteredPosts(@Param('searchString') searchString: string): Promise<PostModel[]> {
+  async getFilteredPosts(@Param('searchString') searchString: string): Promise<PostModel[]> {
     return this.postService.getFilteredPosts(searchString);
   }
 
   @Post('/')
-  createDraft(@Body() post: CreatePostDto): Promise<PostModel> {
+  async createDraft(@Body() post: CreatePostDto): Promise<PostModel> {
     return this.postService.createDraft(post);
   }
 
   @Put('/publish/:id')
-  publishPost(@Param('id', ParseIntPipe) id: number): Promise<PostModel> {
+  async publishPost(@Param('id', ParseIntPipe) id: number): Promise<PostModel> {
     return this.postService.publishPost(id);
   }
 
   @Delete('/:id')
-  deletePost(@Param('id', ParseIntPipe) id: number): Promise<PostModel> {
+  async deletePost(@Param('id', ParseIntPipe) id: number): Promise<PostModel> {
     return this.postService.deletePost(id);
   }
 }
