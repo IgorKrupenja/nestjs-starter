@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { beforeEach, vi } from 'vitest';
-import { DeepMockProxy, mockDeep, mockReset } from 'vitest-mock-extended';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
 
 import { PostService } from './post.service.js';
 import { Post, PrismaClient } from '../../generated/prisma/client.js';
 import { PrismaService } from '../../prisma/services/prisma.service.js';
 
 // Create a mock instance of PrismaClient
-const prisma = mockDeep<PrismaClient>() as unknown as DeepMockProxy<PrismaService>;
+const prisma = mockDeep<PrismaClient>();
 
 describe('PostService', () => {
   let postService: PostService;

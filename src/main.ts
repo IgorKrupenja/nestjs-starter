@@ -4,6 +4,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import compression from 'compression';
 
 import { AppModule } from './app.module.js';
+import { PrismaExceptionFilter } from './prisma/filters/prisma-exception.filter.js';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
@@ -12,10 +13,9 @@ async function bootstrap(): Promise<void> {
   // Also rejects requests with non-whitelisted properties
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
 
-  // const { httpAdapter } = app.get(HttpAdapterHost);
   // Transform Prisma errors into appropriate HTTP responses (e.g., P2002 → 409 Conflict)
   // Otherwise, 500 would be returned
-  // app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
+  app.useGlobalFilters(new PrismaExceptionFilter());
 
   await app.listen(3000);
 
