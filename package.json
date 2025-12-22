@@ -2,7 +2,8 @@
   "name": "nestjs-starter",
   "version": "0.0.1",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
+  "type": "module",
   "scripts": {
     "build": "nest build",
     "dev": "NODE_ENV=development nest start  --watch",
@@ -65,7 +66,7 @@
     "seed": "ts-node prisma/seeders/seed.ts"
   },
   "engines": {
-    "node": ">=22.16.0",
+    "node": "22.21.0",
     "pnpm": "10.26.1"
   },
   "packageManager": "pnpm@10.26.1",

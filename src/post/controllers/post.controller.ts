@@ -9,10 +9,10 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { Post as PostModel } from '@prisma/client';
 
 import { CreatePostDto } from '../dtos/create-post-draft.dto';
 import { PostService } from '../services/post.service';
+import { Post as PostModel } from './generated/prisma/client';
 
 @Controller('/v1/posts')
 export class PostController {

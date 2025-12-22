@@ -15,6 +15,7 @@ async function bootstrap(): Promise<void> {
 
   const prismaService = app.get(PrismaService);
   const prismaLogger = new Logger('PrismaService');
+  // todo errors
   prismaService.$on('query', (e) => prismaLogger.log(e));
   const { httpAdapter } = app.get(HttpAdapterHost);
   // Transform Prisma errors into appropriate HTTP responses (e.g., P2002 → 409 Conflict)

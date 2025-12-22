@@ -1,6 +1,6 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Post as PostModel } from '@prisma/client';
+import { Post as PostModel } from './generated/prisma/client';
 import { describe } from 'vitest';
 
 import { PostController } from './post.controller';
