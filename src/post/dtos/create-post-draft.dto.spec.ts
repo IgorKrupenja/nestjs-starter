@@ -1,6 +1,6 @@
 import { validate } from 'class-validator';
 
-import { CreatePostDto } from './create-post-draft.dto';
+import { CreatePostDto } from './create-post-draft.dto.js';
 
 describe('CreatePostDto', () => {
   let dto: CreatePostDto;

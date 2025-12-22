@@ -1,0 +1,29 @@
+// This config outputs ES6 modules required by Prisma 7
+// Must align with "type": "module" in package.json and "module": "ES2022" in tsconfig.json
+{
+  "$schema": "https://json.schemastore.org/swcrc",
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "decorators": true,
+      "dynamicImport": true
+    },
+    "transform": {
+      "legacyDecorator": true,
+      "decoratorMetadata": true
+    },
+    "target": "es2023",
+    "keepClassNames": true,
+    "baseUrl": "./"
+  },
+  "module": {
+    "type": "es6",
+    "strict": true,
+    "strictMode": true,
+    "lazy": false,
+    "noInterop": false
+  },
+  "sourceMaps": true,
+  "minify": false
+}
+

@@ -1,10 +1,11 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  schemas  = ["starter"]
 }
 
 model User {
@@ -14,6 +15,7 @@ model User {
   posts Post[]
 
   @@map("user")
+  @@schema("starter")
 }
 
 model Post {
@@ -25,4 +27,5 @@ model Post {
   authorId  Int
 
   @@map("post")
+  @@schema("starter")
 }

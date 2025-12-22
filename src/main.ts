@@ -1,21 +1,31 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { ConsoleLogger, Logger, LogLevel, ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import compression from 'compression';
-import { PrismaClientExceptionFilter, PrismaService } from 'nestjs-prisma';
 
-import { AppModule } from './app.module';
+import { AppModule } from './app.module.js';
+import { PrismaExceptionFilter } from './prisma/filters/prisma-exception.filter.js';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
+  const logger = new ConsoleLogger({
+    logLevels: (process.env.LOGGER_LOG_LEVELS?.split(',') as LogLevel[]) || [
+      'error',
+      'warn',
+      'log',
+    ],
+    timestamp: true,
+    colors: process.env.LOGGER_COLORS === 'true',
+  });
+
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true, logger });
   app.use(compression());
+  // Validate DTOs for incoming requests globally
+  // Also rejects requests with non-whitelisted properties
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
 
-  const prismaService = app.get(PrismaService);
-  const prismaLogger = new Logger('PrismaService');
-  prismaService.$on('query', (e) => prismaLogger.log(e));
-  const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
+  // Transform Prisma errors into appropriate HTTP responses (e.g., P2002 → 409 Conflict)
+  // Otherwise, 500 would be returned
+  app.useGlobalFilters(new PrismaExceptionFilter());
 
   await app.listen(3000);
 
