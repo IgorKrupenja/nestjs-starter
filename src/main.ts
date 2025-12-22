@@ -12,10 +12,6 @@ async function bootstrap(): Promise<void> {
   // Also rejects requests with non-whitelisted properties
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
 
-  // const prismaService = app.get(PrismaService);
-  // const prismaLogger = new Logger('PrismaService');
-  // // todo errors
-  // prismaService.$on('query', (e) => prismaLogger.log(e));
   // const { httpAdapter } = app.get(HttpAdapterHost);
   // Transform Prisma errors into appropriate HTTP responses (e.g., P2002 → 409 Conflict)
   // Otherwise, 500 would be returned
