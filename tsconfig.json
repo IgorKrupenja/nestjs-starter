@@ -20,5 +20,5 @@
     "noFallthroughCasesInSwitch": false,
     "types": ["vitest/globals"]
   },
-  "include": ["src/**/*", "test/**/*", "vitest.config.mts"]
+  "include": ["src/**/*", "test/**/*", "vitest.config.mts", "prisma.config.ts"]
 }

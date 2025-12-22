@@ -17,6 +17,7 @@ FROM base AS build
 WORKDIR /app
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=dependencies /app/src/generated ./src/generated
 RUN pnpm install --frozen-lockfile
 RUN pnpm run build
 
