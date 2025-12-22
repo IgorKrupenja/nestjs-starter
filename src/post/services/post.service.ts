@@ -1,21 +1,15 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { CustomPrismaService } from 'nestjs-prisma/dist/custom';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'nestjs-prisma';
 
 import { Post, Prisma } from '../../generated/prisma/client';
-import { PrismaClientType } from '../../prisma.extension';
 import { CreatePostDto } from '../dtos/create-post-draft.dto';
 
 @Injectable()
 export class PostService {
-  // constructor(private prisma: PrismaService) {}
-  constructor(
-    // ✅ use `ExtendedPrismaClient` from extension for correct type-safety
-    @Inject('PrismaService')
-    private prismaService: CustomPrismaService<PrismaClientType>,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   getPost(id: number): Promise<Post | null> {
-    return this.prismaService.client.post.findUnique({
+    return this.prisma.post.findUnique({
       where: { id },
     });
   }
@@ -49,7 +43,7 @@ export class PostService {
     orderBy?: Prisma.PostOrderByWithRelationInput;
   }): Promise<Post[]> {
     const { skip, take, cursor, where, orderBy } = params;
-    return this.prismaService.client.post.findMany({
+    return this.prisma.post.findMany({
       skip,
       take,
       cursor,
@@ -61,7 +55,7 @@ export class PostService {
   createDraft(post: CreatePostDto): Promise<Post> {
     const { title, content, authorEmail } = post;
 
-    return this.prismaService.client.post.create({
+    return this.prisma.post.create({
       data: {
         title,
         content,
@@ -73,14 +67,14 @@ export class PostService {
   }
 
   publishPost(id: number): Promise<Post> {
-    return this.prismaService.client.post.update({
+    return this.prisma.post.update({
       where: { id },
       data: { published: true },
     });
   }
 
   deletePost(id: number): Promise<Post> {
-    return this.prismaService.client.post.delete({
+    return this.prisma.post.delete({
       where: { id },
     });
   }
