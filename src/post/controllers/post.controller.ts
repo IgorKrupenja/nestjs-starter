@@ -11,8 +11,8 @@ import {
 } from '@nestjs/common';
 
 import { PostModel } from '../../generated/prisma/models';
-import { CreatePostDto } from '../dtos/create-post-draft.dto';
-import { PostService } from '../services/post.service';
+import { CreatePostDto } from '../dtos/create-post-draft.dto.js';
+import { PostService } from '../services/post.service.js';
 
 @Controller('/v1/posts')
 export class PostController {
