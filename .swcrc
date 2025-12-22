@@ -1,3 +1,5 @@
+// This whole config is necessary to output ES6 modules
+// ES6 modules are required by Prisma version 7, also set with "type": "module" in package.json
 {
   "$schema": "https://json.schemastore.org/swcrc",
   "jsc": {
