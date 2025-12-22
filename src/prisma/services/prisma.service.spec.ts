@@ -31,35 +31,34 @@ vi.mock('../../generated/prisma/client.js', () => ({
 
 describe('PrismaService', () => {
   let prismaService: PrismaService;
-  let originalNodeEnv: string | undefined;
   let originalDatabaseUrl: string | undefined;
+  let originalLoggerLogLevels: string | undefined;
   let loggerLogSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     // Store original environment variables
-    originalNodeEnv = process.env.NODE_ENV;
     originalDatabaseUrl = process.env.DATABASE_URL;
+    originalLoggerLogLevels = process.env.LOGGER_LOG_LEVELS;
 
     // Set default test environment
-    process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/testdb';
     process.env.NODE_ENV = 'development';
+    process.env.LOGGER_LOG_LEVELS = 'error,warn,log,debug';
 
     // Mock the logger to avoid console output during tests
     loggerLogSpy = vi.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    // Restore original environment variables
-    if (originalNodeEnv !== undefined) {
-      process.env.NODE_ENV = originalNodeEnv;
-    } else {
-      delete process.env.NODE_ENV;
-    }
-
     if (originalDatabaseUrl !== undefined) {
       process.env.DATABASE_URL = originalDatabaseUrl;
     } else {
       delete process.env.DATABASE_URL;
+    }
+
+    if (originalLoggerLogLevels !== undefined) {
+      process.env.LOGGER_LOG_LEVELS = originalLoggerLogLevels;
+    } else {
+      delete process.env.LOGGER_LOG_LEVELS;
     }
 
     vi.restoreAllMocks();
@@ -77,24 +76,24 @@ describe('PrismaService', () => {
       });
     });
 
-    it('should be instantiable in production mode', () => {
-      process.env.NODE_ENV = 'production';
+    it('should be instantiable with minimal log levels', () => {
+      process.env.LOGGER_LOG_LEVELS = 'error';
 
       prismaService = new PrismaService();
 
       expect(prismaService).toBeDefined();
     });
 
-    it('should be instantiable in development mode', () => {
-      process.env.NODE_ENV = 'development';
+    it('should be instantiable with all log levels', () => {
+      process.env.LOGGER_LOG_LEVELS = 'error,warn,log,debug';
 
       prismaService = new PrismaService();
 
       expect(prismaService).toBeDefined();
     });
 
-    it('should default to development mode when NODE_ENV is not set', () => {
-      delete process.env.NODE_ENV;
+    it('should default to error,warn,log when LOGGER_LOG_LEVELS is not set', () => {
+      delete process.env.LOGGER_LOG_LEVELS;
 
       prismaService = new PrismaService();
 
@@ -110,8 +109,8 @@ describe('PrismaService', () => {
       expect(logger).toBeInstanceOf(Logger);
     });
 
-    it('should configure production logging when NODE_ENV is production', () => {
-      process.env.NODE_ENV = 'production';
+    it('should configure minimal logging when only error and warn are enabled', () => {
+      process.env.LOGGER_LOG_LEVELS = 'error,warn';
       mockPrismaClientConstructor.mockClear();
 
       prismaService = new PrismaService();
@@ -126,8 +125,8 @@ describe('PrismaService', () => {
       );
     });
 
-    it('should configure development logging when NODE_ENV is development', () => {
-      process.env.NODE_ENV = 'development';
+    it('should configure full logging when all levels including debug are enabled', () => {
+      process.env.LOGGER_LOG_LEVELS = 'error,warn,log,debug';
       mockPrismaClientConstructor.mockClear();
 
       prismaService = new PrismaService();
@@ -146,8 +145,8 @@ describe('PrismaService', () => {
   });
 
   describe('onModuleInit', () => {
-    it('should set up query logging in development mode', async () => {
-      process.env.NODE_ENV = 'development';
+    it('should set up query logging when debug level is enabled', async () => {
+      process.env.LOGGER_LOG_LEVELS = 'error,warn,log,debug';
       prismaService = new PrismaService();
 
       await prismaService.onModuleInit();
@@ -156,8 +155,8 @@ describe('PrismaService', () => {
       expect(prismaService.$on).toHaveBeenCalledWith('query', expect.any(Function));
     });
 
-    it('should not set up query logging in production mode', async () => {
-      process.env.NODE_ENV = 'production';
+    it('should not set up query logging when debug level is not enabled', async () => {
+      process.env.LOGGER_LOG_LEVELS = 'error,warn,log';
       prismaService = new PrismaService();
 
       await prismaService.onModuleInit();
@@ -166,8 +165,8 @@ describe('PrismaService', () => {
       expect(prismaService.$on).not.toHaveBeenCalled();
     });
 
-    it('should log query details when query event is emitted in development', async () => {
-      process.env.NODE_ENV = 'development';
+    it('should log query details when query event is emitted with debug enabled', async () => {
+      process.env.LOGGER_LOG_LEVELS = 'error,warn,log,debug';
       prismaService = new PrismaService();
 
       let queryCallback:
@@ -209,7 +208,7 @@ describe('PrismaService', () => {
     });
 
     it('should log multiple queries correctly', async () => {
-      process.env.NODE_ENV = 'development';
+      process.env.LOGGER_LOG_LEVELS = 'error,warn,log,debug';
       prismaService = new PrismaService();
 
       let queryCallback:
@@ -245,20 +244,28 @@ describe('PrismaService', () => {
       expect(loggerLogSpy).toHaveBeenCalledWith('Query: INSERT INTO posts VALUES ($1, $2)');
     });
 
-    it('should use development logging for non-production environments', async () => {
-      const environments = ['development', 'test', 'staging', 'local'];
+    it('should enable query logging when debug is in LOGGER_LOG_LEVELS with other levels', async () => {
+      process.env.LOGGER_LOG_LEVELS = 'error,warn,log,debug';
+      const service = new PrismaService();
+      await service.onModuleInit();
 
-      for (const env of environments) {
-        process.env.NODE_ENV = env;
-        const service = new PrismaService();
-        await service.onModuleInit();
+      expect(service.$on).toHaveBeenCalledWith('query', expect.any(Function));
+    });
 
-        // Non-production environments should set up query logging
-        expect(service.$on).toHaveBeenCalledWith('query', expect.any(Function));
+    it('should enable query logging when only debug is in LOGGER_LOG_LEVELS', async () => {
+      process.env.LOGGER_LOG_LEVELS = 'debug';
+      const service = new PrismaService();
+      await service.onModuleInit();
 
-        // Reset mocks for next iteration
-        vi.clearAllMocks();
-      }
+      expect(service.$on).toHaveBeenCalledWith('query', expect.any(Function));
+    });
+
+    it('should not enable query logging when debug is not in LOGGER_LOG_LEVELS', async () => {
+      process.env.LOGGER_LOG_LEVELS = 'error,warn,log';
+      const service = new PrismaService();
+      await service.onModuleInit();
+
+      expect(service.$on).not.toHaveBeenCalled();
     });
   });
 

@@ -7,8 +7,10 @@ FROM base AS dependencies
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 COPY prisma ./prisma
-RUN pnpm install --prod --frozen-lockfile
+# Install all deps (including prisma CLI), generate client, then prune to prod only
+RUN pnpm install --frozen-lockfile
 RUN pnpm exec prisma generate
+RUN pnpm prune --prod
 
 FROM base AS build
 
