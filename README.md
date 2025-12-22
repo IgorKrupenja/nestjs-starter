@@ -49,9 +49,20 @@ pnpm run dev
 # Unit tests in watch mode
 pnpm run test
 
+# Unit tests (run once)
+pnpm run test:run
+
 # Test coverage
 pnpm run test:cov
+
+# E2E tests in watch mode
+pnpm run test:e2e
+
+# E2E tests (run once)
+pnpm run test:e2e:run
 ```
+
+See [test/README.md](test/README.md) for more information about E2E testing.
 
 ## Lint
 
