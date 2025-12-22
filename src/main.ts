@@ -29,10 +29,9 @@ async function bootstrap(): Promise<void> {
 
   await app.listen(3000);
 
-  const logger2 = new Logger('bootstrap');
-  logger2.log('IGOR', process.env.NODE_ENV);
   if (process.env.NODE_ENV === 'development') {
-    logger2.log(`Listening on ${await app.getUrl()}`);
+    const logger = new Logger('bootstrap');
+    logger.log(`Listening on ${await app.getUrl()}`);
   }
 }
 
