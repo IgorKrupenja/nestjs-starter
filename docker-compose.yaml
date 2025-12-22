@@ -2,8 +2,7 @@ name: nestjs-starter
 
 services:
   db:
-    # todo upgrade version
-    image: postgres:17.4
+    image: postgres:18.1
     container_name: postgres
     environment:
       - POSTGRES_PASSWORD=postgres
