@@ -16,6 +16,7 @@ const env = process.env.NODE_ENV;
       isGlobal: true,
       prismaServiceOptions: {
         prismaOptions: {
+          adapter: process.env.DATABASE_URL,
           log:
             env === 'production'
               ? [
