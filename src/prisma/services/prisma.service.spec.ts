@@ -4,22 +4,28 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PrismaService } from './prisma.service.js';
 
 // Mock the PrismaPg adapter
+const mockPrismaPgConstructor = vi.fn();
+
 vi.mock('@prisma/adapter-pg', () => ({
   PrismaPg: class MockPrismaPg {
     connectionString: string;
     constructor(config: { connectionString: string }) {
+      mockPrismaPgConstructor(config);
       this.connectionString = config.connectionString;
     }
   },
 }));
 
 // Mock PrismaClient to avoid real database connections
+const mockPrismaClientConstructor = vi.fn();
 vi.mock('../../generated/prisma/client.js', () => ({
   PrismaClient: class MockPrismaClient {
     $connect = vi.fn().mockResolvedValue(undefined);
     $disconnect = vi.fn().mockResolvedValue(undefined);
     $on = vi.fn();
-    constructor() {}
+    constructor(config?: any) {
+      mockPrismaClientConstructor(config);
+    }
   },
 }));
 
@@ -66,6 +72,9 @@ describe('PrismaService', () => {
 
       prismaService = new PrismaService();
       expect(prismaService).toBeDefined();
+      expect(mockPrismaPgConstructor).toHaveBeenCalledWith({
+        connectionString: testUrl,
+      });
     });
 
     it('should be instantiable in production mode', () => {
@@ -99,6 +108,40 @@ describe('PrismaService', () => {
       const logger = (prismaService as unknown as { logger: Logger }).logger;
       expect(logger).toBeDefined();
       expect(logger).toBeInstanceOf(Logger);
+    });
+
+    it('should configure production logging when NODE_ENV is production', () => {
+      process.env.NODE_ENV = 'production';
+      mockPrismaClientConstructor.mockClear();
+
+      prismaService = new PrismaService();
+
+      expect(mockPrismaClientConstructor).toHaveBeenCalledWith(
+        expect.objectContaining({
+          log: expect.arrayContaining([
+            { emit: 'stdout', level: 'warn' },
+            { emit: 'stdout', level: 'error' },
+          ]) as unknown,
+        }) as unknown,
+      );
+    });
+
+    it('should configure development logging when NODE_ENV is development', () => {
+      process.env.NODE_ENV = 'development';
+      mockPrismaClientConstructor.mockClear();
+
+      prismaService = new PrismaService();
+
+      expect(mockPrismaClientConstructor).toHaveBeenCalledWith(
+        expect.objectContaining({
+          log: expect.arrayContaining([
+            { emit: 'event', level: 'query' },
+            { emit: 'stdout', level: 'info' },
+            { emit: 'stdout', level: 'warn' },
+            { emit: 'stdout', level: 'error' },
+          ]) as unknown,
+        }) as unknown,
+      );
     });
   });
 
