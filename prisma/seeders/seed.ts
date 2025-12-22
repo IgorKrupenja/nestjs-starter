@@ -2,7 +2,10 @@ import { parseArgs } from 'node:util';
 
 import { PrismaPg } from '@prisma/adapter-pg';
 
+import { seedPosts } from './data/posts.seeder.js';
+import { seedUsers } from './data/users.seeder.js';
 import { PrismaClient } from '../../src/generated/prisma/client.js';
+import type { PrismaClient as PrismaClientType } from '../../src/generated/prisma/client.js';
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL as string,
@@ -14,67 +17,34 @@ const options = {
   environment: { type: 'string' as const },
 };
 
-async function seedDevelopment(): Promise<void> {
-  console.log('🌱 Seeding development data...');
+/**
+ * Development seeders - runs all seeders in order
+ */
+async function seedDevelopment(prisma: PrismaClientType): Promise<void> {
+  console.log('🌱 Seeding development data...\n');
 
-  const user1 = await prisma.user.create({
-    data: {
-      email: 'alice@example.com',
-      name: 'Alice',
-    },
-  });
+  // Order matters! Users must be seeded before posts
+  await seedUsers(prisma);
+  await seedPosts(prisma);
 
-  const user2 = await prisma.user.create({
-    data: {
-      email: 'bob@example.com',
-      name: 'Bob',
-    },
-  });
+  // Add more seeders here as needed:
+  // await seedCategories(prisma);
+  // await seedComments(prisma);
+  // etc.
 
-  await Promise.all([
-    prisma.post.create({
-      data: {
-        title: 'First Post',
-        content: 'This is the first post content.',
-        published: true,
-        authorId: user1.id,
-      },
-    }),
-    prisma.post.create({
-      data: {
-        title: 'Second Post',
-        content: 'Content for the second post.',
-        published: false,
-        authorId: user1.id,
-      },
-    }),
-    prisma.post.create({
-      data: {
-        title: 'Third Post',
-        content: 'Another post, this time by Bob.',
-        published: true,
-        authorId: user2.id,
-      },
-    }),
-    prisma.post.create({
-      data: {
-        title: 'Fourth Post',
-        content: "Bob's second post.",
-        published: true,
-        authorId: user2.id,
-      },
-    }),
-    prisma.post.create({
-      data: {
-        title: 'Fifth Post',
-        content: "Alice's third post, still in draft.",
-        published: false,
-        authorId: user1.id,
-      },
-    }),
-  ]);
+  console.log('\n✅ Development data seeded successfully!');
+}
 
-  console.log('✅ Development data seeded successfully!');
+/**
+ * Test seeders - minimal data for testing
+ */
+async function seedTest(prisma: PrismaClientType): Promise<void> {
+  console.log('🧪 Seeding test data...\n');
+
+  // Add minimal test data here
+  await seedUsers(prisma);
+
+  console.log('\n✅ Test data seeded successfully!');
 }
 
 async function main(): Promise<void> {
@@ -84,11 +54,10 @@ async function main(): Promise<void> {
 
   switch (environment) {
     case 'development':
-      await seedDevelopment();
+      await seedDevelopment(prisma);
       break;
     case 'test':
-      // Add test data here if needed
-      console.log('🧪 Test environment - no seed data configured');
+      await seedTest(prisma);
       break;
     case 'production':
       console.log('⚠️  Production environment - skipping seed');

@@ -18,9 +18,6 @@
     "test:debug": "vitest --inspect-brk --inspect --logHeapUsage --threads=false",
     "test:run": "vitest run"
   },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  },
   "dependencies": {
     "@nestjs/common": "^11.1.10",
     "@nestjs/config": "^4.0.2",
