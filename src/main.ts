@@ -22,7 +22,6 @@ async function bootstrap(): Promise<void> {
   // Validate DTOs for incoming requests globally
   // Also rejects requests with non-whitelisted properties
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
-
   // Transform Prisma errors into appropriate HTTP responses (e.g., P2002 → 409 Conflict)
   // Otherwise, 500 would be returned
   app.useGlobalFilters(new PrismaExceptionFilter());

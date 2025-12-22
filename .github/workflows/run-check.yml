@@ -19,4 +19,8 @@ jobs:
           node-version-file: package.json
           cache: pnpm
       - run: pnpm install
-      - run: ${{ inputs.command }}
+      # Use env var to prevent script injection
+      - name: Run command
+        env:
+          COMMAND: ${{ inputs.command }}
+        run: $COMMAND

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     // ES6 modules required by Prisma 7
-    // Must align with "type": "module" in package.json 
+    // Must align with "type": "module" in package.json
     // and.swcrc config that outputs ES6 modules
     "module": "ES2022",
     "moduleResolution": "bundler",
@@ -21,7 +21,10 @@
     "forceConsistentCasingInFileNames": true,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+    "paths": {
+      "@src/*": ["src/*"]
+    }
   },
   "include": ["src/**/*", "test/**/*", "vitest.config.mts", "prisma.config.ts", "prisma/**/*"]
 }

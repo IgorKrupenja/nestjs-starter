@@ -18,7 +18,7 @@ vi.mock('@prisma/adapter-pg', () => ({
 
 // Mock PrismaClient to avoid real database connections
 const mockPrismaClientConstructor = vi.fn();
-vi.mock('../../generated/prisma/client.js', () => ({
+vi.mock('@src/generated/prisma/client.js', () => ({
   PrismaClient: class MockPrismaClient {
     $connect = vi.fn().mockResolvedValue(undefined);
     $disconnect = vi.fn().mockResolvedValue(undefined);

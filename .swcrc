@@ -12,7 +12,10 @@
     },
     "target": "es2023",
     "keepClassNames": true,
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      "@src/*": ["src/*"]
+    }
   },
   "module": {
     "type": "es6",

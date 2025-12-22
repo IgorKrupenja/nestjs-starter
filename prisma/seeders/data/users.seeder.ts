@@ -1,4 +1,4 @@
-import type { PrismaClient } from '../../../src/generated/prisma/client.js';
+import type { PrismaClient } from '@src/generated/prisma/client.js';
 
 export async function seedUsers(prisma: PrismaClient): Promise<void> {
   console.log('  → Seeding users...');

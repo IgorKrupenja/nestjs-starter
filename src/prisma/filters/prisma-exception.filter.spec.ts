@@ -1,8 +1,8 @@
 import { ArgumentsHost, HttpStatus } from '@nestjs/common';
+import { Prisma } from '@src/generated/prisma/client.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { PrismaExceptionFilter } from './prisma-exception.filter.js';
-import { Prisma } from '../../generated/prisma/client.js';
 
 describe('PrismaExceptionFilter', () => {
   let filter: PrismaExceptionFilter;

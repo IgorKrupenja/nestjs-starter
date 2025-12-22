@@ -1,6 +1,5 @@
+import { Prisma } from '@src/generated/prisma/client.js';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-
-import { Prisma } from '../../generated/prisma/client.js';
 
 export class CreatePostDto implements Pick<Prisma.PostCreateInput, 'title' | 'content'> {
   @IsString()
