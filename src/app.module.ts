@@ -12,6 +12,27 @@ import { PrismaModule } from './prisma/prisma.module.js';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    // PrismaModule.forRoot({
+    //   isGlobal: true,
+    //   prismaServiceOptions: {
+    //     prismaOptions: {
+    //       adapter: process.env.DATABASE_URL,
+    //       log:
+    //         env === 'production'
+    //           ? [
+    //               { emit: 'stdout', level: 'warn' },
+    //               { emit: 'stdout', level: 'error' },
+    //             ]
+    //           : [
+    //               { emit: 'event', level: 'query' },
+    //               { emit: 'stdout', level: 'info' },
+    //               { emit: 'stdout', level: 'warn' },
+    //               { emit: 'stdout', level: 'error' },
+    //             ],
+    //     },
+    //   },
+    // }),
   ],
+  // providers: [providePrismaClientExceptionFilter()],
 })
 export class AppModule {}
