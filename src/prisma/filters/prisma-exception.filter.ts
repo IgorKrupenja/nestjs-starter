@@ -1,10 +1,12 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus, Logger } from '@nestjs/common';
 import { Response } from 'express';
 
 import { Prisma } from '../../generated/prisma/client.js';
 
 @Catch(Prisma.PrismaClientKnownRequestError)
 export class PrismaExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(PrismaExceptionFilter.name);
+
   catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -35,19 +37,27 @@ export class PrismaExceptionFilter implements ExceptionFilter {
   }
 
   private getMessage(exception: Prisma.PrismaClientKnownRequestError): string {
+    const isDevelopment = process.env.NODE_ENV !== 'production';
+
     switch (exception.code) {
       case 'P2002':
-        return `Unique constraint failed on field: ${this.getTarget(exception)}`;
+        // In production, don't expose field names
+        return isDevelopment
+          ? `Unique constraint failed on field: ${this.getTarget(exception)}`
+          : 'A record with this value already exists';
       case 'P2025':
         return 'Record not found';
       case 'P2003':
-        return 'Foreign key constraint failed';
+        return isDevelopment
+          ? 'Foreign key constraint failed'
+          : 'Invalid reference to related record';
       case 'P2021':
-        return 'Table does not exist in the database';
       case 'P2022':
-        return 'Column does not exist in the database';
+        // Never expose schema details in production
+        return isDevelopment ? exception.message : 'Database error occurred';
       default:
-        return exception.message;
+        // Don't leak internal error details in production
+        return isDevelopment ? exception.message : 'An error occurred processing your request';
     }
   }
 
