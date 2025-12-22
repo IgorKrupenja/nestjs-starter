@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import swc from 'unplugin-swc';
 import { configDefaults, defineConfig } from 'vitest/config';
 
@@ -15,6 +16,11 @@ export default defineConfig({
         '**/*.module.ts',
         'generated/**/*',
       ],
+    },
+  },
+  resolve: {
+    alias: {
+      '@src': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
   plugins: [

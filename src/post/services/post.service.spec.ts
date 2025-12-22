@@ -3,8 +3,8 @@ import { beforeEach, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 
 import { PostService } from './post.service.js';
-import { Post, PrismaClient } from '../../generated/prisma/client.js';
-import { PrismaService } from '../../prisma/services/prisma.service.js';
+import { Post, PrismaClient } from '@src/generated/prisma/client.js';
+import { PrismaService } from '@src/prisma/services/prisma.service.js';
 
 // Create a mock instance of PrismaClient
 const prisma = mockDeep<PrismaClient>();
