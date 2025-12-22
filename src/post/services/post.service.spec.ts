@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { PostService } from './post.service';
+// todo why this error?
 import prisma from '../../../test/__mocks__/prisma.service';
 import { Post } from '../../generated/prisma/client';
 import { PrismaService } from '../../prisma.service';
