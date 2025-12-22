@@ -22,7 +22,7 @@ cp .env.example .env
 # Start DB
 docker compose up -d
 # Prepare Prisma
-pnpm exec prisma migrate dev --name init
+pnpm exec prisma migrate dev
 pnpm exec prisma generate
 pnpm exec prisma db seed
 ```
