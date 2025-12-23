@@ -19,9 +19,9 @@ describe('Post API (E2E)', () => {
   let dbUtil: DatabaseUtil;
 
   beforeAll(async () => {
+    // TODO: Hardcoded for now, will fix with ConfigService
     // Set test database URL
     process.env.DATABASE_URL =
-      process.env.TEST_DATABASE_URL ||
       'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
 
     const moduleFixture: TestingModule = await Test.createTestingModule({

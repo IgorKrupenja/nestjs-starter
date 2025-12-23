@@ -16,9 +16,8 @@ describe('Swagger Documentation (E2E)', () => {
     let prisma: PrismaService;
 
     beforeAll(async () => {
-      // Set test database URL
+      // TODO: Hardcoded for now, will fix with ConfigService
       process.env.DATABASE_URL =
-        process.env.TEST_DATABASE_URL ||
         'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
       process.env.API_DOCUMENTATION_ENABLED = 'true';
 
@@ -95,7 +94,6 @@ describe('Swagger Documentation (E2E)', () => {
     beforeAll(async () => {
       // Set test database URL
       process.env.DATABASE_URL =
-        process.env.TEST_DATABASE_URL ||
         'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
       process.env.API_DOCUMENTATION_ENABLED = 'false';
 
@@ -148,7 +146,6 @@ describe('Swagger Documentation (E2E)', () => {
     beforeAll(async () => {
       // Set test database URL
       process.env.DATABASE_URL =
-        process.env.TEST_DATABASE_URL ||
         'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
       delete process.env.API_DOCUMENTATION_ENABLED;
 
