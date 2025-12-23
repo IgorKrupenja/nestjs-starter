@@ -1,4 +1,4 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module.js';
 import { PrismaExceptionFilter } from '@src/prisma/filters/prisma-exception.filter.js';
@@ -21,6 +21,10 @@ export async function createTestApp(): Promise<INestApplication> {
   const app = moduleFixture.createNestApplication();
 
   // Apply the same configuration as the production app
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

@@ -85,6 +85,10 @@ pnpm run lint
 pnpm run format
 ```
 
+## Swagger Documentation
+
+Automatically generated API documentation can be found at <http://localhost:3000/documentation>
+
 ## Testing Docker image
 
 **You should NEVER use this to run locally**. This is only for testing the Docker image.

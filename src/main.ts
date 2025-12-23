@@ -1,4 +1,4 @@
-import { ConsoleLogger, Logger, LogLevel, ValidationPipe } from '@nestjs/common';
+import { ConsoleLogger, Logger, LogLevel, ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import compression from 'compression';
@@ -19,6 +19,9 @@ async function bootstrap(): Promise<void> {
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true, logger });
   app.use(compression());
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
   // Validate DTOs for incoming requests globally
   // Also rejects requests with non-whitelisted properties
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
