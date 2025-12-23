@@ -1,6 +1,7 @@
 import { ConsoleLogger, Logger, LogLevel, ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from 'compression';
 
 import { AppModule } from './app.module.js';
@@ -28,6 +29,21 @@ async function bootstrap(): Promise<void> {
   // Transform Prisma errors into appropriate HTTP responses (e.g., P2002 → 409 Conflict)
   // Otherwise, 500 would be returned
   app.useGlobalFilters(new PrismaExceptionFilter());
+
+  const config = new DocumentBuilder()
+    .addBearerAuth({ in: 'header', type: 'http' })
+    .setTitle('NestJS Starter')
+    .setDescription('API documentation for NestJS Starter project')
+    .setVersion('1.0.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('documentation', app, document, {
+    swaggerOptions: {
+      operationsSorter: 'alpha',
+      persistAuthorization: true,
+      tagsSorter: 'alpha',
+    },
+  });
 
   await app.listen(3000);
 
