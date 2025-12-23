@@ -1,10 +1,9 @@
 import type { Server } from 'node:http';
 
-import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { configureApp } from '@src/app.config.js';
 import { AppModule } from '@src/app.module.js';
-import { PrismaExceptionFilter } from '@src/prisma/filters/prisma-exception.filter.js';
 import { PrismaService } from '@src/prisma/services/prisma.service.js';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -29,35 +28,7 @@ describe('Swagger Documentation (E2E)', () => {
       prisma = app.get<PrismaService>(PrismaService);
 
       // Apply the same configuration as the production app
-      app.enableVersioning({
-        type: VersioningType.URI,
-      });
-
-      app.useGlobalPipes(
-        new ValidationPipe({
-          whitelist: true,
-          forbidNonWhitelisted: true,
-          transform: true,
-        }),
-      );
-
-      app.useGlobalFilters(new PrismaExceptionFilter());
-
-      // Setup Swagger API documentation
-      const config = new DocumentBuilder()
-        .addBearerAuth({ in: 'header', type: 'http' })
-        .setTitle('NestJS Starter')
-        .setDescription('API documentation for NestJS Starter project')
-        .setVersion('1.0.0')
-        .build();
-      const document = SwaggerModule.createDocument(app, config);
-      SwaggerModule.setup('documentation', app, document, {
-        swaggerOptions: {
-          operationsSorter: 'alpha',
-          persistAuthorization: true,
-          tagsSorter: 'alpha',
-        },
-      });
+      configureApp(app, { enableSwagger: true });
 
       await app.init();
       server = app.getHttpServer() as Server;
@@ -105,19 +76,7 @@ describe('Swagger Documentation (E2E)', () => {
       prisma = app.get<PrismaService>(PrismaService);
 
       // Apply the same configuration as the production app
-      app.enableVersioning({
-        type: VersioningType.URI,
-      });
-
-      app.useGlobalPipes(
-        new ValidationPipe({
-          whitelist: true,
-          forbidNonWhitelisted: true,
-          transform: true,
-        }),
-      );
-
-      app.useGlobalFilters(new PrismaExceptionFilter());
+      configureApp(app, { enableSwagger: false });
 
       await app.init();
       server = app.getHttpServer() as Server;
@@ -157,19 +116,7 @@ describe('Swagger Documentation (E2E)', () => {
       prisma = app.get<PrismaService>(PrismaService);
 
       // Apply the same configuration as the production app
-      app.enableVersioning({
-        type: VersioningType.URI,
-      });
-
-      app.useGlobalPipes(
-        new ValidationPipe({
-          whitelist: true,
-          forbidNonWhitelisted: true,
-          transform: true,
-        }),
-      );
-
-      app.useGlobalFilters(new PrismaExceptionFilter());
+      configureApp(app); // Swagger disabled by default
 
       await app.init();
       server = app.getHttpServer() as Server;

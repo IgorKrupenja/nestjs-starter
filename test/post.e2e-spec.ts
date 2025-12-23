@@ -1,11 +1,11 @@
 import type { Server } from 'node:http';
 
-import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { configureApp } from '@src/app.config.js';
 import { AppModule } from '@src/app.module.js';
 import { PostModel } from '@src/generated/prisma/models.js';
 import { CreatePostDto } from '@src/post/dtos/create-post-draft.dto.js';
-import { PrismaExceptionFilter } from '@src/prisma/filters/prisma-exception.filter.js';
 import { PrismaService } from '@src/prisma/services/prisma.service.js';
 import request from 'supertest';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
@@ -33,19 +33,7 @@ describe('Post API (E2E)', () => {
     dbUtil = new DatabaseUtil(prisma);
 
     // Apply the same configuration as the production app
-    app.enableVersioning({
-      type: VersioningType.URI,
-    });
-
-    app.useGlobalPipes(
-      new ValidationPipe({
-        whitelist: true,
-        forbidNonWhitelisted: true,
-        transform: true,
-      }),
-    );
-
-    app.useGlobalFilters(new PrismaExceptionFilter());
+    configureApp(app);
 
     await app.init();
     server = app.getHttpServer() as Server;
