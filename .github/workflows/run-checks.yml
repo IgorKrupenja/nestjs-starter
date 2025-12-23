@@ -21,6 +21,41 @@ jobs:
     uses: ./.github/workflows/run-check.yml
     with:
       command: pnpm exec prisma generate && pnpm run test
+  test-e2e:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:18.1
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: nestjs_starter_test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: pnpm
+      - run: pnpm install
+      - name: Generate Prisma Client
+        run: pnpm exec prisma generate
+      - name: Run migrations on test database
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter
+        run: pnpm exec prisma migrate deploy
+      - name: Run e2e tests
+        env:
+          TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter
+        run: pnpm run test:e2e:run
   build:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest

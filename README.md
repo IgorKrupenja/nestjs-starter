@@ -45,13 +45,33 @@ pnpm run dev
 
 ## Run tests
 
+### Unit tests
+
 ```bash
 # Unit tests in watch mode
 pnpm run test
 
+# Unit tests (run once)
+pnpm run test:run
+
 # Test coverage
 pnpm run test:cov
 ```
+
+### E2E tests
+
+```bash
+# Set up test database (first time only - starts container + runs migrations)
+pnpm run test:e2e:setup
+
+# E2E tests in watch mode
+pnpm run test:e2e
+
+# E2E tests (run once)
+pnpm run test:e2e:run
+```
+
+**Note:** E2E tests use a separate PostgreSQL database (port 5433) for complete isolation from development data (port 5432).
 
 ## Lint
 
