@@ -20,7 +20,7 @@ corepack up
 pnpm install
 cp .env.example .env
 # Start DB
-docker compose up -d
+docker compose up db -d
 # Prepare Prisma
 pnpm exec prisma migrate dev
 pnpm exec prisma generate

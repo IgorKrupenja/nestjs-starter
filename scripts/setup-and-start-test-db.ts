@@ -14,35 +14,11 @@ const testDatabaseUrl =
 console.log('🚀 Starting test database and running migrations...\n');
 
 try {
-  // Check if db-test container is already running
-  console.log('1️⃣ Checking test database status...');
-  try {
-    const result = execSync('docker compose ps db-test --format json', {
-      encoding: 'utf-8',
-    });
-    const containerInfo = JSON.parse(result) as { State?: string };
-
-    if (containerInfo.State === 'running') {
-      console.log('   ✓ Test database is already running');
-    } else {
-      console.log('   Starting test database container...');
-      execSync('docker compose up db-test -d', { stdio: 'inherit' });
-      console.log('   ✓ Test database started');
-
-      // Wait for database to be ready
-      console.log('   Waiting for database to be ready...');
-      execSync('sleep 3');
-    }
-  } catch {
-    // Container doesn't exist, start it
-    console.log('   Starting test database container...');
-    execSync('docker compose up db-test -d', { stdio: 'inherit' });
-    console.log('   ✓ Test database started');
-
-    // Wait for database to be ready
-    console.log('   Waiting for database to be ready...');
-    execSync('sleep 3');
-  }
+  console.log('1️⃣ Starting test database container...');
+  // docker compose up -d is idempotent
+  // it will start the container if it's not running
+  // or do nothing if it's already running
+  execSync('docker compose up db-test -d --wait', { stdio: 'inherit' });
 
   console.log('\n2️⃣ Running Prisma migrations on test database...');
   execSync('pnpm exec prisma migrate deploy', {
