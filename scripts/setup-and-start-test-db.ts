@@ -2,7 +2,6 @@
 
 /**
  * Script to start the test database and run migrations
- * This combines starting the Docker container and running Prisma migrations
  */
 
 import { execSync } from 'node:child_process';
