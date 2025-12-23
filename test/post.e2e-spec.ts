@@ -1,36 +1,61 @@
 import type { Server } from 'node:http';
 
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { AppModule } from '@src/app.module.js';
 import { PostModel } from '@src/generated/prisma/models.js';
 import { CreatePostDto } from '@src/post/dtos/create-post-draft.dto.js';
+import { PrismaExceptionFilter } from '@src/prisma/filters/prisma-exception.filter.js';
+import { PrismaService } from '@src/prisma/services/prisma.service.js';
 import request from 'supertest';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
-import { DatabaseHelper } from './helpers/database.js';
-import { createTestApp } from './helpers/test-app.js';
+import { DatabaseUtil } from './utils/database.util.js';
 
 describe('Post API (E2E)', () => {
   let app: INestApplication;
   let server: Server;
-  let dbHelper: DatabaseHelper;
+  let prisma: PrismaService;
+  let dbUtil: DatabaseUtil;
 
   beforeAll(async () => {
-    app = await createTestApp();
+    // Set test database URL
+    process.env.DATABASE_URL =
+      process.env.TEST_DATABASE_URL ||
+      'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
+
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+    prisma = app.get<PrismaService>(PrismaService);
+    dbUtil = new DatabaseUtil(prisma);
+
+    // Apply the same configuration as the production app
+    app.enableVersioning({
+      type: VersioningType.URI,
+    });
+
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      }),
+    );
+
+    app.useGlobalFilters(new PrismaExceptionFilter());
+
+    await app.init();
     server = app.getHttpServer() as Server;
-    dbHelper = new DatabaseHelper();
-  });
 
-  afterAll(async () => {
-    await dbHelper.disconnect();
-    await app.close();
-  });
-
-  beforeEach(async () => {
-    // Clean database before each test to ensure isolation
-    await dbHelper.cleanDatabase();
+    // Clean database before starting tests
+    await dbUtil.truncate();
+    await dbUtil.resetSequences();
 
     // Create a test user for post creation
-    await dbHelper.getClient().user.create({
+    await prisma.user.create({
       data: {
         email: 'test@example.com',
         name: 'Test User',
@@ -38,9 +63,16 @@ describe('Post API (E2E)', () => {
     });
   });
 
+  afterAll(async () => {
+    await dbUtil.truncate();
+    await dbUtil.resetSequences();
+    await prisma.$disconnect();
+    await app.close();
+  });
+
   afterEach(async () => {
-    // Optional: clean up after each test
-    await dbHelper.cleanDatabase();
+    // Clean up posts after each test to ensure isolation
+    await prisma.post.deleteMany();
   });
 
   describe('POST /v1/posts', () => {
@@ -85,7 +117,7 @@ describe('Post API (E2E)', () => {
   describe('GET /v1/posts/:id', () => {
     it('should return a post by id', async () => {
       // Create a post first
-      const post = await dbHelper.getClient().post.create({
+      const post = await prisma.post.create({
         data: {
           title: 'Test Post',
           content: 'Test Content',
@@ -111,32 +143,29 @@ describe('Post API (E2E)', () => {
 
   describe('GET /v1/posts', () => {
     it('should return only published posts', async () => {
+      // Get the test user
+      const user = await prisma.user.findUnique({ where: { email: 'test@example.com' } });
+
       // Create published and draft posts
-      await dbHelper.getClient().post.createMany({
+      await prisma.post.createMany({
         data: [
           {
             title: 'Published Post 1',
             content: 'Content 1',
             published: true,
-            authorId: (await dbHelper
-              .getClient()
-              .user.findUnique({ where: { email: 'test@example.com' } }))!.id,
+            authorId: user!.id,
           },
           {
             title: 'Draft Post',
             content: 'Content 2',
             published: false,
-            authorId: (await dbHelper
-              .getClient()
-              .user.findUnique({ where: { email: 'test@example.com' } }))!.id,
+            authorId: user!.id,
           },
           {
             title: 'Published Post 2',
             content: 'Content 3',
             published: true,
-            authorId: (await dbHelper
-              .getClient()
-              .user.findUnique({ where: { email: 'test@example.com' } }))!.id,
+            authorId: user!.id,
           },
         ],
       });
@@ -157,7 +186,7 @@ describe('Post API (E2E)', () => {
 
   describe('PUT /v1/posts/publish/:id', () => {
     it('should publish a draft post', async () => {
-      const post = await dbHelper.getClient().post.create({
+      const post = await prisma.post.create({
         data: {
           title: 'Draft Post',
           content: 'Content',
@@ -178,7 +207,7 @@ describe('Post API (E2E)', () => {
 
   describe('DELETE /v1/posts/:id', () => {
     it('should delete a post', async () => {
-      const post = await dbHelper.getClient().post.create({
+      const post = await prisma.post.create({
         data: {
           title: 'Post to Delete',
           content: 'Content',
@@ -191,7 +220,7 @@ describe('Post API (E2E)', () => {
       await request(server).delete(`/v1/posts/${post.id}`).expect(200);
 
       // Verify post is deleted
-      const deletedPost = await dbHelper.getClient().post.findUnique({
+      const deletedPost = await prisma.post.findUnique({
         where: { id: post.id },
       });
       expect(deletedPost).toBeNull();
@@ -200,23 +229,22 @@ describe('Post API (E2E)', () => {
 
   describe('GET /v1/posts/search/:searchString', () => {
     it('should return posts matching the search string', async () => {
-      await dbHelper.getClient().post.createMany({
+      // Get the test user
+      const user = await prisma.user.findUnique({ where: { email: 'test@example.com' } });
+
+      await prisma.post.createMany({
         data: [
           {
             title: 'JavaScript Tutorial',
             content: 'Learn JavaScript',
             published: true,
-            authorId: (await dbHelper
-              .getClient()
-              .user.findUnique({ where: { email: 'test@example.com' } }))!.id,
+            authorId: user!.id,
           },
           {
             title: 'Python Guide',
             content: 'Learn Python',
             published: true,
-            authorId: (await dbHelper
-              .getClient()
-              .user.findUnique({ where: { email: 'test@example.com' } }))!.id,
+            authorId: user!.id,
           },
         ],
       });
