@@ -28,7 +28,7 @@ describe('Swagger Documentation (E2E)', () => {
       prisma = app.get<PrismaService>(PrismaService);
 
       // Apply the same configuration as the production app
-      configureApp(app, { enableSwagger: true });
+      configureApp(app);
 
       await app.init();
       server = app.getHttpServer() as Server;
@@ -76,7 +76,8 @@ describe('Swagger Documentation (E2E)', () => {
       prisma = app.get<PrismaService>(PrismaService);
 
       // Apply the same configuration as the production app
-      configureApp(app, { enableSwagger: false });
+      // API_DOCUMENTATION_ENABLED is set to 'false' in beforeAll
+      configureApp(app);
 
       await app.init();
       server = app.getHttpServer() as Server;
@@ -116,7 +117,8 @@ describe('Swagger Documentation (E2E)', () => {
       prisma = app.get<PrismaService>(PrismaService);
 
       // Apply the same configuration as the production app
-      configureApp(app); // Swagger disabled by default
+      // API_DOCUMENTATION_ENABLED is not set (deleted in beforeAll)
+      configureApp(app);
 
       await app.init();
       server = app.getHttpServer() as Server;

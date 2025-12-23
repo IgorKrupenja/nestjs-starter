@@ -19,9 +19,7 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true, logger });
 
   // Apply shared app configuration (compression, versioning, pipes, filters, swagger)
-  configureApp(app, {
-    enableSwagger: process.env.API_DOCUMENTATION_ENABLED === 'true',
-  });
+  configureApp(app);
 
   await app.listen(3000);
 }

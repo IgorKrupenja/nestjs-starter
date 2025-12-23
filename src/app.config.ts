@@ -4,22 +4,12 @@ import compression from 'compression';
 
 import { PrismaExceptionFilter } from './prisma/filters/prisma-exception.filter.js';
 
-export interface AppConfigOptions {
-  /**
-   * Whether to enable Swagger API documentation
-   * @default false
-   */
-  enableSwagger?: boolean;
-}
-
 /**
  * Configures the NestJS application with common settings
  * This function is used by both the main application and tests
  * to ensure consistent configuration
  */
-export function configureApp(app: INestApplication, options: AppConfigOptions = {}): void {
-  const { enableSwagger = false } = options;
-
+export function configureApp(app: INestApplication): void {
   app.use(compression());
 
   // Enable URI versioning (e.g., /v1/posts)
@@ -42,7 +32,7 @@ export function configureApp(app: INestApplication, options: AppConfigOptions = 
   app.useGlobalFilters(new PrismaExceptionFilter());
 
   // Setup Swagger API documentation (if enabled)
-  if (enableSwagger) {
+  if (process.env.API_DOCUMENTATION_ENABLED === 'true') {
     const config = new DocumentBuilder()
       .addBearerAuth({ in: 'header', type: 'http' })
       .setTitle('NestJS Starter')
