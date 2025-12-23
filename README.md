@@ -61,10 +61,7 @@ pnpm run test:cov
 ### E2E tests
 
 ```bash
-# Start test database (first time only)
-docker compose up db-test -d
-
-# Set up E2E test database (first time only)
+# Set up test database (first time only - starts container + runs migrations)
 pnpm run test:e2e:setup
 
 # E2E tests in watch mode
