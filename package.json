@@ -78,8 +78,11 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "@nestjs/core",
+      "@prisma/engines",
+      "@scarf/scarf",
       "@swc/core",
       "esbuild",
+      "prisma",
       "unrs-resolver"
     ]
   }
