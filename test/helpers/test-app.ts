@@ -1,5 +1,6 @@
 import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from '@src/app.module.js';
 import { PrismaExceptionFilter } from '@src/prisma/filters/prisma-exception.filter.js';
 
@@ -34,6 +35,24 @@ export async function createTestApp(): Promise<INestApplication> {
   );
 
   app.useGlobalFilters(new PrismaExceptionFilter());
+
+  // Setup Swagger API documentation (if enabled)
+  if (process.env.API_DOCUMENTATION_ENABLED === 'true') {
+    const config = new DocumentBuilder()
+      .addBearerAuth({ in: 'header', type: 'http' })
+      .setTitle('NestJS Starter')
+      .setDescription('API documentation for NestJS Starter project')
+      .setVersion('1.0.0')
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('documentation', app, document, {
+      swaggerOptions: {
+        operationsSorter: 'alpha',
+        persistAuthorization: true,
+        tagsSorter: 'alpha',
+      },
+    });
+  }
 
   await app.init();
 
