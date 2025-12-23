@@ -34,6 +34,7 @@ pnpm exec prisma db seed
 | `DATABASE_URL` | PostgreSQL connection string | ✅ Yes | N/A | |
 | `LOGGER_LOG_LEVELS` | Comma-separated log levels (error, warn, log, debug) |  | `error,warn,log` | `error,warn,log` |
 | `LOGGER_COLORS` | Enable colored console output |  | `false` | `false` |
+| `API_DOCUMENTATION_ENABLED` | Enable Swagger API documentation |  | `false` | `false` |
 
 **[Example `.env` file](.env.example).**
 
@@ -87,7 +88,7 @@ pnpm run format
 
 ## Swagger Documentation
 
-Automatically generated API documentation can be found at <http://localhost:3000/documentation>
+**Note:** It's recommended to keep API documentation disabled in production environments for security reasons.
 
 ## Testing Docker image
 

@@ -30,20 +30,23 @@ async function bootstrap(): Promise<void> {
   // Otherwise, 500 would be returned
   app.useGlobalFilters(new PrismaExceptionFilter());
 
-  const config = new DocumentBuilder()
-    .addBearerAuth({ in: 'header', type: 'http' })
-    .setTitle('NestJS Starter')
-    .setDescription('API documentation for NestJS Starter project')
-    .setVersion('1.0.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('documentation', app, document, {
-    swaggerOptions: {
-      operationsSorter: 'alpha',
-      persistAuthorization: true,
-      tagsSorter: 'alpha',
-    },
-  });
+  // Setup Swagger API documentation (if enabled)
+  if (process.env.API_DOCUMENTATION_ENABLED === 'true') {
+    const config = new DocumentBuilder()
+      .addBearerAuth({ in: 'header', type: 'http' })
+      .setTitle('NestJS Starter')
+      .setDescription('API documentation for NestJS Starter project')
+      .setVersion('1.0.0')
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('documentation', app, document, {
+      swaggerOptions: {
+        operationsSorter: 'alpha',
+        persistAuthorization: true,
+        tagsSorter: 'alpha',
+      },
+    });
+  }
 
   await app.listen(3000);
 
