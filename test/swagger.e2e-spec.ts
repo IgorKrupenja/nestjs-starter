@@ -8,6 +8,33 @@ import { PrismaService } from '@src/prisma/services/prisma.service.js';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
+/**
+ * Helper function to create and configure a test app
+ */
+async function createSwaggerTestApp(): Promise<{
+  app: INestApplication;
+  server: Server;
+  prisma: PrismaService;
+}> {
+  // TODO: Hardcoded for now, will fix with ConfigService
+  process.env.DATABASE_URL =
+    'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
+
+  const moduleFixture: TestingModule = await Test.createTestingModule({
+    imports: [AppModule],
+  }).compile();
+
+  const app = moduleFixture.createNestApplication();
+  const prisma = app.get<PrismaService>(PrismaService);
+
+  configureApp(app);
+
+  await app.init();
+  const server = app.getHttpServer() as Server;
+
+  return { app, server, prisma };
+}
+
 describe('Swagger Documentation (E2E)', () => {
   describe('when API_DOCUMENTATION_ENABLED is true', () => {
     let app: INestApplication;
@@ -15,23 +42,8 @@ describe('Swagger Documentation (E2E)', () => {
     let prisma: PrismaService;
 
     beforeAll(async () => {
-      // TODO: Hardcoded for now, will fix with ConfigService
-      process.env.DATABASE_URL =
-        'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
       process.env.API_DOCUMENTATION_ENABLED = 'true';
-
-      const moduleFixture: TestingModule = await Test.createTestingModule({
-        imports: [AppModule],
-      }).compile();
-
-      app = moduleFixture.createNestApplication();
-      prisma = app.get<PrismaService>(PrismaService);
-
-      // Apply the same configuration as the production app
-      configureApp(app);
-
-      await app.init();
-      server = app.getHttpServer() as Server;
+      ({ app, server, prisma } = await createSwaggerTestApp());
     });
 
     afterAll(async () => {
@@ -63,24 +75,8 @@ describe('Swagger Documentation (E2E)', () => {
     let prisma: PrismaService;
 
     beforeAll(async () => {
-      // Set test database URL
-      process.env.DATABASE_URL =
-        'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
       process.env.API_DOCUMENTATION_ENABLED = 'false';
-
-      const moduleFixture: TestingModule = await Test.createTestingModule({
-        imports: [AppModule],
-      }).compile();
-
-      app = moduleFixture.createNestApplication();
-      prisma = app.get<PrismaService>(PrismaService);
-
-      // Apply the same configuration as the production app
-      // API_DOCUMENTATION_ENABLED is set to 'false' in beforeAll
-      configureApp(app);
-
-      await app.init();
-      server = app.getHttpServer() as Server;
+      ({ app, server, prisma } = await createSwaggerTestApp());
     });
 
     afterAll(async () => {
@@ -104,24 +100,8 @@ describe('Swagger Documentation (E2E)', () => {
     let prisma: PrismaService;
 
     beforeAll(async () => {
-      // Set test database URL
-      process.env.DATABASE_URL =
-        'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
       delete process.env.API_DOCUMENTATION_ENABLED;
-
-      const moduleFixture: TestingModule = await Test.createTestingModule({
-        imports: [AppModule],
-      }).compile();
-
-      app = moduleFixture.createNestApplication();
-      prisma = app.get<PrismaService>(PrismaService);
-
-      // Apply the same configuration as the production app
-      // API_DOCUMENTATION_ENABLED is not set (deleted in beforeAll)
-      configureApp(app);
-
-      await app.init();
-      server = app.getHttpServer() as Server;
+      ({ app, server, prisma } = await createSwaggerTestApp());
     });
 
     afterAll(async () => {
