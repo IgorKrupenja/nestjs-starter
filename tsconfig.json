@@ -29,6 +29,7 @@
   "include": [
     "src/**/*",
     "test/**/*",
+    "scripts/**/*",
     "vitest.config.mts",
     "vitest.config.e2e.mts",
     "prisma.config.ts",

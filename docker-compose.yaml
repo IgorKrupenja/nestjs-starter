@@ -9,3 +9,12 @@ services:
       - POSTGRES_DB=nestjs_starter
     ports:
       - '5432:5432'
+
+  db-test:
+    image: postgres:18.1
+    container_name: postgres-test
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=nestjs_starter_test
+    ports:
+      - '5433:5432'

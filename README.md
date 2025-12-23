@@ -45,6 +45,8 @@ pnpm run dev
 
 ## Run tests
 
+### Unit tests
+
 ```bash
 # Unit tests in watch mode
 pnpm run test
@@ -54,6 +56,16 @@ pnpm run test:run
 
 # Test coverage
 pnpm run test:cov
+```
+
+### E2E tests
+
+```bash
+# Start test database (first time only)
+docker compose up db-test -d
+
+# Set up E2E test database (first time only)
+pnpm run test:e2e:setup
 
 # E2E tests in watch mode
 pnpm run test:e2e
@@ -62,7 +74,7 @@ pnpm run test:e2e
 pnpm run test:e2e:run
 ```
 
-See [test/README.md](test/README.md) for more information about E2E testing.
+**Note:** E2E tests use a separate PostgreSQL database (port 5433) for complete isolation from development data (port 5432).
 
 ## Lint
 

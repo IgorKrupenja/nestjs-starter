@@ -6,8 +6,14 @@ import { PrismaExceptionFilter } from '@src/prisma/filters/prisma-exception.filt
 /**
  * Creates a NestJS application instance for E2E testing
  * This helper ensures consistent app configuration across all E2E tests
+ * The app connects to the test database (port 5433) for complete isolation
  */
 export async function createTestApp(): Promise<INestApplication> {
+  // Set test database URL for the app
+  process.env.DATABASE_URL =
+    process.env.TEST_DATABASE_URL ||
+    'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
+
   const moduleFixture: TestingModule = await Test.createTestingModule({
     imports: [AppModule],
   }).compile();

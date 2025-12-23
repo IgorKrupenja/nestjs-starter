@@ -4,13 +4,19 @@ import { PrismaClient } from '@src/generated/prisma/client.js';
 /**
  * Database helper for E2E tests
  * Provides utilities for cleaning up test data
+ * Uses a separate test database for complete isolation from development data
  */
 export class DatabaseHelper {
   private prisma: PrismaClient;
 
   constructor() {
+    // Use test database URL (separate database on port 5433)
+    const testDatabaseUrl =
+      process.env.TEST_DATABASE_URL ||
+      'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
+
     const adapter = new PrismaPg({
-      connectionString: process.env.DATABASE_URL as string,
+      connectionString: testDatabaseUrl,
     });
 
     this.prisma = new PrismaClient({
