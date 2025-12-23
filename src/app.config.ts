@@ -20,7 +20,6 @@ export interface AppConfigOptions {
 export function configureApp(app: INestApplication, options: AppConfigOptions = {}): void {
   const { enableSwagger = false } = options;
 
-  // Enable compression for all responses
   app.use(compression());
 
   // Enable URI versioning (e.g., /v1/posts)
