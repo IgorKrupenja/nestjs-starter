@@ -1,39 +1,11 @@
 import type { Server } from 'node:http';
 
 import { INestApplication } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import { configureApp } from '@src/app.config.js';
-import { AppModule } from '@src/app.module.js';
 import { PrismaService } from '@src/prisma/services/prisma.service.js';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-/**
- * Helper function to create and configure a test app
- */
-async function createSwaggerTestApp(): Promise<{
-  app: INestApplication;
-  server: Server;
-  prisma: PrismaService;
-}> {
-  // TODO: Hardcoded for now, will fix with ConfigService
-  process.env.DATABASE_URL =
-    'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
-
-  const moduleFixture: TestingModule = await Test.createTestingModule({
-    imports: [AppModule],
-  }).compile();
-
-  const app = moduleFixture.createNestApplication();
-  const prisma = app.get<PrismaService>(PrismaService);
-
-  configureApp(app);
-
-  await app.init();
-  const server = app.getHttpServer() as Server;
-
-  return { app, server, prisma };
-}
+import { createTestApp } from './utils/create-test-app.util.js';
 
 describe('Swagger Documentation (E2E)', () => {
   describe('when API_DOCUMENTATION_ENABLED is true', () => {
@@ -43,7 +15,7 @@ describe('Swagger Documentation (E2E)', () => {
 
     beforeAll(async () => {
       process.env.API_DOCUMENTATION_ENABLED = 'true';
-      ({ app, server, prisma } = await createSwaggerTestApp());
+      ({ app, server, prisma } = await createTestApp());
     });
 
     afterAll(async () => {
@@ -76,7 +48,7 @@ describe('Swagger Documentation (E2E)', () => {
 
     beforeAll(async () => {
       process.env.API_DOCUMENTATION_ENABLED = 'false';
-      ({ app, server, prisma } = await createSwaggerTestApp());
+      ({ app, server, prisma } = await createTestApp());
     });
 
     afterAll(async () => {
@@ -101,7 +73,7 @@ describe('Swagger Documentation (E2E)', () => {
 
     beforeAll(async () => {
       delete process.env.API_DOCUMENTATION_ENABLED;
-      ({ app, server, prisma } = await createSwaggerTestApp());
+      ({ app, server, prisma } = await createTestApp());
     });
 
     afterAll(async () => {

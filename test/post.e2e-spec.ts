@@ -1,15 +1,13 @@
 import type { Server } from 'node:http';
 
 import { INestApplication } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import { configureApp } from '@src/app.config.js';
-import { AppModule } from '@src/app.module.js';
 import { PostModel } from '@src/generated/prisma/models.js';
 import { CreatePostDto } from '@src/post/dtos/create-post-draft.dto.js';
 import { PrismaService } from '@src/prisma/services/prisma.service.js';
 import request from 'supertest';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
+import { createTestApp } from './utils/create-test-app.util.js';
 import { DatabaseUtil } from './utils/database.util.js';
 
 describe('Post API (E2E)', () => {
@@ -19,23 +17,8 @@ describe('Post API (E2E)', () => {
   let dbUtil: DatabaseUtil;
 
   beforeAll(async () => {
-    // TODO: Hardcoded for now, will fix with ConfigService
-    process.env.DATABASE_URL =
-      'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
-
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication();
-    prisma = app.get<PrismaService>(PrismaService);
+    ({ app, server, prisma } = await createTestApp());
     dbUtil = new DatabaseUtil(prisma);
-
-    // Apply the same configuration as the production app
-    configureApp(app);
-
-    await app.init();
-    server = app.getHttpServer() as Server;
 
     // Clean database before starting tests
     await dbUtil.truncate();
