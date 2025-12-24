@@ -3,7 +3,7 @@ import { registerAs } from '@nestjs/config';
 
 import { appConfigSchema } from './app-config.schema.js';
 import { AppConfig } from './interfaces/app-config.interface.js';
-import { ConfigUtil } from '../common/utils/config.util.js';
+import { ConfigUtil } from './utils/config.util.js';
 
 export const appConfigFactory = registerAs('app', (): AppConfig => {
   const env = ConfigUtil.validate(appConfigSchema);
