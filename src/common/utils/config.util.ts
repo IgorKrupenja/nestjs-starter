@@ -1,7 +1,7 @@
-import * as joi from 'joi';
+import Joi from 'joi';
 
 export class ConfigUtil {
-  static validate<T>(schema: joi.ObjectSchema<T>): {
+  static validate<T>(schema: Joi.ObjectSchema<T>): {
     [key in keyof T]: unknown;
   } {
     const result = schema.options({ stripUnknown: true }).validate(process.env);
