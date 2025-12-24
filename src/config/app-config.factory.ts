@@ -1,3 +1,4 @@
+import { LogLevel } from '@nestjs/common';
 import { registerAs } from '@nestjs/config';
 
 import { appConfigSchema } from './app-config.schema.js';
@@ -16,6 +17,6 @@ export const appConfigFactory = registerAs('app', (): AppConfig => {
   };
 });
 
-function parseLogLevels(value: string): string[] {
-  return value.split(',').map((level) => level.trim());
+function parseLogLevels(value: string): LogLevel[] {
+  return value.split(',').map((level) => level.trim()) as LogLevel[];
 }

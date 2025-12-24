@@ -2,6 +2,7 @@ import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from 'compression';
 
+import { AppConfig } from './config/interfaces/app-config.interface.js';
 import { PrismaExceptionFilter } from './prisma/filters/prisma-exception.filter.js';
 
 /**
@@ -9,7 +10,7 @@ import { PrismaExceptionFilter } from './prisma/filters/prisma-exception.filter.
  * This function is used by both the main application and tests
  * to ensure consistent configuration
  */
-export function configureApp(app: INestApplication): void {
+export function configureApp(app: INestApplication, config: AppConfig): void {
   app.use(compression());
 
   // Enable URI versioning (e.g., /v1/posts)
@@ -32,14 +33,14 @@ export function configureApp(app: INestApplication): void {
   app.useGlobalFilters(new PrismaExceptionFilter());
 
   // Setup Swagger API documentation (if enabled)
-  if (process.env.API_DOCUMENTATION_ENABLED === 'true') {
-    const config = new DocumentBuilder()
+  if (config.apiDocumentationEnabled) {
+    const swaggerConfig = new DocumentBuilder()
       .addBearerAuth({ in: 'header', type: 'http' })
       .setTitle('NestJS Starter')
       .setDescription('API documentation for NestJS Starter project')
       .setVersion('1.0.0')
       .build();
-    const document = SwaggerModule.createDocument(app, config);
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
     SwaggerModule.setup('documentation', app, document, {
       swaggerOptions: {
         operationsSorter: 'alpha',

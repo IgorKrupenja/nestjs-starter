@@ -1,25 +1,26 @@
-import { ConsoleLogger, LogLevel } from '@nestjs/common';
+import { ConsoleLogger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { configureApp } from './app.config.js';
 import { AppModule } from './app.module.js';
+import { appConfigFactory } from './config/app-config.factory.js';
+import { AppConfig } from './config/interfaces/app-config.interface.js';
 
 async function bootstrap(): Promise<void> {
-  const logger = new ConsoleLogger({
-    logLevels: (process.env.LOGGER_LOG_LEVELS?.split(',') as LogLevel[]) || [
-      'error',
-      'warn',
-      'log',
-    ],
-    timestamp: true,
-    colors: process.env.LOGGER_COLORS === 'true',
-  });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
 
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true, logger });
+  const appConfig = app.get<AppConfig>(appConfigFactory.KEY);
+
+  const logger = new ConsoleLogger({
+    logLevels: appConfig.loggerLogLevels,
+    timestamp: true,
+    colors: appConfig.loggerColors,
+  });
+  app.useLogger(logger);
 
   // Apply shared app configuration (compression, versioning, pipes, filters, swagger)
-  configureApp(app);
+  configureApp(app, appConfig);
 
   await app.listen(3000);
 }
