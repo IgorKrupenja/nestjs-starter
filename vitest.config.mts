@@ -11,13 +11,8 @@ export default defineConfig({
     root: './',
     exclude: [...configDefaults.exclude, 'dist/**'],
     coverage: {
-      exclude: [
-        ...configDefaults.exclude,
-        'prisma/seeders/seed.ts',
-        'src/main.ts',
-        '**/*.module.ts',
-        'generated/**/*',
-      ],
+      include: ['src/**/*.ts'],
+      exclude: ['generated/**/*', 'main.ts', 'app.config.ts'],
     },
   },
   resolve: {
