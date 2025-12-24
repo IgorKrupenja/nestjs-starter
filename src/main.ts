@@ -10,6 +10,7 @@ import { AppConfig } from './config/interfaces/app-config.interface.js';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
 
+  // todo can this be in configureApp?
   const appConfig = app.get<AppConfig>(appConfigFactory.KEY);
 
   const logger = new ConsoleLogger({

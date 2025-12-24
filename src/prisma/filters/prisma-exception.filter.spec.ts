@@ -1,4 +1,5 @@
 import { ArgumentsHost, HttpStatus } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Prisma } from '@src/generated/prisma/client.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -11,13 +12,16 @@ describe('PrismaExceptionFilter', () => {
     status: ReturnType<typeof vi.fn>;
     json: ReturnType<typeof vi.fn>;
   };
-  let originalNodeEnv: string | undefined;
+  let mockConfigService: ConfigService;
 
   beforeEach(() => {
-    originalNodeEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'development';
+    mockConfigService = {
+      get: vi.fn().mockReturnValue({
+        nodeEnv: 'development',
+      }),
+    } as unknown as ConfigService;
 
-    filter = new PrismaExceptionFilter();
+    filter = new PrismaExceptionFilter(mockConfigService);
 
     mockResponse = {
       status: vi.fn().mockReturnThis(),
@@ -32,7 +36,7 @@ describe('PrismaExceptionFilter', () => {
   });
 
   afterEach(() => {
-    process.env.NODE_ENV = originalNodeEnv;
+    vi.clearAllMocks();
   });
 
   describe('P2002 - Unique constraint violation', () => {
@@ -137,7 +141,7 @@ describe('PrismaExceptionFilter', () => {
     });
 
     it('should hide schema details in production', () => {
-      process.env.NODE_ENV = 'production';
+      vi.mocked(mockConfigService.get).mockReturnValue({ nodeEnv: 'production' });
       const exception = new Prisma.PrismaClientKnownRequestError('Table does not exist', {
         code: 'P2021',
         clientVersion: '7.2.0',
@@ -171,7 +175,7 @@ describe('PrismaExceptionFilter', () => {
     });
 
     it('should hide schema details in production', () => {
-      process.env.NODE_ENV = 'production';
+      vi.mocked(mockConfigService.get).mockReturnValue({ nodeEnv: 'production' });
       const exception = new Prisma.PrismaClientKnownRequestError('Column does not exist', {
         code: 'P2022',
         clientVersion: '7.2.0',
@@ -205,7 +209,7 @@ describe('PrismaExceptionFilter', () => {
     });
 
     it('should return generic message in production', () => {
-      process.env.NODE_ENV = 'production';
+      vi.mocked(mockConfigService.get).mockReturnValue({ nodeEnv: 'production' });
       const exception = new Prisma.PrismaClientKnownRequestError('Some internal error details', {
         code: 'P9999',
         clientVersion: '7.2.0',
@@ -223,7 +227,7 @@ describe('PrismaExceptionFilter', () => {
 
   describe('Production security', () => {
     beforeEach(() => {
-      process.env.NODE_ENV = 'production';
+      vi.mocked(mockConfigService.get).mockReturnValue({ nodeEnv: 'production' });
     });
 
     it('should not expose field names for P2002 in production', () => {

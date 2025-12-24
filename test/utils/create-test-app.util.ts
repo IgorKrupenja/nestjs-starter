@@ -3,6 +3,8 @@ import type { Server } from 'node:http';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { configureApp } from '@src/app.config.js';
+import { appConfigFactory } from '@src/config/app-config.factory.js';
+import { AppConfig } from '@src/config/interfaces/app-config.interface.js';
 import { AppModule } from '@src/app.module.js';
 import { PrismaService } from '@src/prisma/services/prisma.service.js';
 
@@ -15,10 +17,6 @@ export async function createTestApp(): Promise<{
   server: Server;
   prisma: PrismaService;
 }> {
-  // TODO: Hardcoded for now, will fix with ConfigService
-  process.env.DATABASE_URL =
-    'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
-
   const moduleFixture: TestingModule = await Test.createTestingModule({
     imports: [AppModule],
   }).compile();
@@ -26,8 +24,11 @@ export async function createTestApp(): Promise<{
   const app = moduleFixture.createNestApplication();
   const prisma = app.get<PrismaService>(PrismaService);
 
+  // Get validated config
+  const appConfig = app.get<AppConfig>(appConfigFactory.KEY);
+
   // Apply the same configuration as the production app
-  configureApp(app);
+  configureApp(app, appConfig);
 
   await app.init();
   const server = app.getHttpServer() as Server;

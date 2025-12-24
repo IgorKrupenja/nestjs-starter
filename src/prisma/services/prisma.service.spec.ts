@@ -1,4 +1,5 @@
 import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { PrismaService } from './prisma.service.js';
@@ -31,45 +32,36 @@ vi.mock('@src/generated/prisma/client.js', () => ({
 
 describe('PrismaService', () => {
   let prismaService: PrismaService;
-  let originalDatabaseUrl: string | undefined;
-  let originalLoggerLogLevels: string | undefined;
+  let mockConfigService: ConfigService;
   let loggerLogSpy: ReturnType<typeof vi.spyOn>;
 
+  const createMockConfigService = (overrides?: {
+    databaseUrl?: string;
+    loggerLogLevels?: string[];
+  }): ConfigService => {
+    return {
+      get: vi.fn().mockReturnValue({
+        databaseUrl: overrides?.databaseUrl || 'postgresql://user:pass@localhost:5432/test',
+        loggerLogLevels: overrides?.loggerLogLevels || ['error', 'warn', 'log', 'debug'],
+      }),
+    } as unknown as ConfigService;
+  };
+
   beforeEach(() => {
-    // Store original environment variables
-    originalDatabaseUrl = process.env.DATABASE_URL;
-    originalLoggerLogLevels = process.env.LOGGER_LOG_LEVELS;
-
-    // Set default test environment
-    process.env.NODE_ENV = 'development';
-    process.env.LOGGER_LOG_LEVELS = 'error,warn,log,debug';
-
-    // Mock the logger to avoid console output during tests
+    mockConfigService = createMockConfigService();
     loggerLogSpy = vi.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    if (originalDatabaseUrl !== undefined) {
-      process.env.DATABASE_URL = originalDatabaseUrl;
-    } else {
-      delete process.env.DATABASE_URL;
-    }
-
-    if (originalLoggerLogLevels !== undefined) {
-      process.env.LOGGER_LOG_LEVELS = originalLoggerLogLevels;
-    } else {
-      delete process.env.LOGGER_LOG_LEVELS;
-    }
-
     vi.restoreAllMocks();
   });
 
   describe('constructor', () => {
     it('should initialize with database URL from environment', () => {
       const testUrl = 'postgresql://user:pass@localhost:5432/mydb';
-      process.env.DATABASE_URL = testUrl;
+      mockConfigService = createMockConfigService({ databaseUrl: testUrl });
 
-      prismaService = new PrismaService();
+      prismaService = new PrismaService(mockConfigService);
       expect(prismaService).toBeDefined();
       expect(mockPrismaPgConstructor).toHaveBeenCalledWith({
         connectionString: testUrl,
@@ -77,31 +69,33 @@ describe('PrismaService', () => {
     });
 
     it('should be instantiable with minimal log levels', () => {
-      process.env.LOGGER_LOG_LEVELS = 'error';
+      mockConfigService = createMockConfigService({ loggerLogLevels: ['error'] });
 
-      prismaService = new PrismaService();
+      prismaService = new PrismaService(mockConfigService);
 
       expect(prismaService).toBeDefined();
     });
 
     it('should be instantiable with all log levels', () => {
-      process.env.LOGGER_LOG_LEVELS = 'error,warn,log,debug';
+      mockConfigService = createMockConfigService({
+        loggerLogLevels: ['error', 'warn', 'log', 'debug'],
+      });
 
-      prismaService = new PrismaService();
+      prismaService = new PrismaService(mockConfigService);
 
       expect(prismaService).toBeDefined();
     });
 
     it('should default to error,warn,log when LOGGER_LOG_LEVELS is not set', () => {
-      delete process.env.LOGGER_LOG_LEVELS;
+      mockConfigService = createMockConfigService({ loggerLogLevels: ['error', 'warn', 'log'] });
 
-      prismaService = new PrismaService();
+      prismaService = new PrismaService(mockConfigService);
 
       expect(prismaService).toBeDefined();
     });
 
     it('should create a logger instance', () => {
-      prismaService = new PrismaService();
+      prismaService = new PrismaService(mockConfigService);
 
       // Access the private logger through reflection for testing
       const logger = (prismaService as unknown as { logger: Logger }).logger;
@@ -110,10 +104,10 @@ describe('PrismaService', () => {
     });
 
     it('should configure minimal logging when only error and warn are enabled', () => {
-      process.env.LOGGER_LOG_LEVELS = 'error,warn';
+      mockConfigService = createMockConfigService({ loggerLogLevels: ['error', 'warn'] });
       mockPrismaClientConstructor.mockClear();
 
-      prismaService = new PrismaService();
+      prismaService = new PrismaService(mockConfigService);
 
       expect(mockPrismaClientConstructor).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -126,10 +120,12 @@ describe('PrismaService', () => {
     });
 
     it('should configure full logging when all levels including debug are enabled', () => {
-      process.env.LOGGER_LOG_LEVELS = 'error,warn,log,debug';
+      mockConfigService = createMockConfigService({
+        loggerLogLevels: ['error', 'warn', 'log', 'debug'],
+      });
       mockPrismaClientConstructor.mockClear();
 
-      prismaService = new PrismaService();
+      prismaService = new PrismaService(mockConfigService);
 
       expect(mockPrismaClientConstructor).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -146,8 +142,10 @@ describe('PrismaService', () => {
 
   describe('onModuleInit', () => {
     it('should set up query logging when debug level is enabled', async () => {
-      process.env.LOGGER_LOG_LEVELS = 'error,warn,log,debug';
-      prismaService = new PrismaService();
+      mockConfigService = createMockConfigService({
+        loggerLogLevels: ['error', 'warn', 'log', 'debug'],
+      });
+      prismaService = new PrismaService(mockConfigService);
 
       await prismaService.onModuleInit();
 
@@ -156,8 +154,8 @@ describe('PrismaService', () => {
     });
 
     it('should not set up query logging when debug level is not enabled', async () => {
-      process.env.LOGGER_LOG_LEVELS = 'error,warn,log';
-      prismaService = new PrismaService();
+      mockConfigService = createMockConfigService({ loggerLogLevels: ['error', 'warn', 'log'] });
+      prismaService = new PrismaService(mockConfigService);
 
       await prismaService.onModuleInit();
 
@@ -166,8 +164,10 @@ describe('PrismaService', () => {
     });
 
     it('should log query details when query event is emitted with debug enabled', async () => {
-      process.env.LOGGER_LOG_LEVELS = 'error,warn,log,debug';
-      prismaService = new PrismaService();
+      mockConfigService = createMockConfigService({
+        loggerLogLevels: ['error', 'warn', 'log', 'debug'],
+      });
+      prismaService = new PrismaService(mockConfigService);
 
       let queryCallback:
         | ((e: { query: string; params: string; duration: number }) => void)
@@ -200,7 +200,7 @@ describe('PrismaService', () => {
     });
 
     it('should handle connection errors gracefully', async () => {
-      prismaService = new PrismaService();
+      prismaService = new PrismaService(mockConfigService);
       const error = new Error('Connection failed');
       vi.mocked(prismaService.$connect).mockRejectedValue(error);
 
@@ -208,8 +208,10 @@ describe('PrismaService', () => {
     });
 
     it('should log multiple queries correctly', async () => {
-      process.env.LOGGER_LOG_LEVELS = 'error,warn,log,debug';
-      prismaService = new PrismaService();
+      mockConfigService = createMockConfigService({
+        loggerLogLevels: ['error', 'warn', 'log', 'debug'],
+      });
+      prismaService = new PrismaService(mockConfigService);
 
       let queryCallback:
         | ((e: { query: string; params: string; duration: number }) => void)
@@ -245,24 +247,26 @@ describe('PrismaService', () => {
     });
 
     it('should enable query logging when debug is in LOGGER_LOG_LEVELS with other levels', async () => {
-      process.env.LOGGER_LOG_LEVELS = 'error,warn,log,debug';
-      const service = new PrismaService();
+      mockConfigService = createMockConfigService({
+        loggerLogLevels: ['error', 'warn', 'log', 'debug'],
+      });
+      const service = new PrismaService(mockConfigService);
       await service.onModuleInit();
 
       expect(service.$on).toHaveBeenCalledWith('query', expect.any(Function));
     });
 
     it('should enable query logging when only debug is in LOGGER_LOG_LEVELS', async () => {
-      process.env.LOGGER_LOG_LEVELS = 'debug';
-      const service = new PrismaService();
+      mockConfigService = createMockConfigService({ loggerLogLevels: ['debug'] });
+      const service = new PrismaService(mockConfigService);
       await service.onModuleInit();
 
       expect(service.$on).toHaveBeenCalledWith('query', expect.any(Function));
     });
 
     it('should not enable query logging when debug is not in LOGGER_LOG_LEVELS', async () => {
-      process.env.LOGGER_LOG_LEVELS = 'error,warn,log';
-      const service = new PrismaService();
+      mockConfigService = createMockConfigService({ loggerLogLevels: ['error', 'warn', 'log'] });
+      const service = new PrismaService(mockConfigService);
       await service.onModuleInit();
 
       expect(service.$on).not.toHaveBeenCalled();
@@ -271,14 +275,14 @@ describe('PrismaService', () => {
 
   describe('integration with NestJS lifecycle', () => {
     it('should implement OnModuleInit interface', () => {
-      prismaService = new PrismaService();
+      prismaService = new PrismaService(mockConfigService);
 
       expect(prismaService.onModuleInit).toBeDefined();
       expect(typeof prismaService.onModuleInit).toBe('function');
     });
 
     it('should be usable as a NestJS provider', () => {
-      prismaService = new PrismaService();
+      prismaService = new PrismaService(mockConfigService);
 
       // Verify it has the expected PrismaClient methods
       expect(prismaService.$connect).toBeDefined();
@@ -287,8 +291,7 @@ describe('PrismaService', () => {
     });
 
     it('should be injectable', () => {
-      // The @Injectable() decorator makes it a provider
-      prismaService = new PrismaService();
+      prismaService = new PrismaService(mockConfigService);
       expect(prismaService).toBeInstanceOf(PrismaService);
     });
   });
