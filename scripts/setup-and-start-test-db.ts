@@ -6,9 +6,6 @@
 
 import { execSync } from 'node:child_process';
 
-const testDatabaseUrl =
-  'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
-
 console.log('🚀 Starting test database and running migrations...\n');
 
 try {
@@ -23,7 +20,9 @@ try {
     stdio: 'inherit',
     env: {
       ...process.env,
-      DATABASE_URL: process.env.DATABASE_URL || testDatabaseUrl,
+      DATABASE_URL:
+        process.env.DATABASE_URL ||
+        'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter',
     },
   });
 
