@@ -18,5 +18,6 @@ export const appConfigFactory = registerAs('app', (): AppConfig => {
 });
 
 function parseLogLevels(value: string): LogLevel[] {
-  return value.split(',').map((level) => level.trim()) as LogLevel[];
+  const levels = value.split(',').map((level) => level.trim()) as LogLevel[];
+  return levels;
 }

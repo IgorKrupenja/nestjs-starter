@@ -1,6 +1,7 @@
+import { LogLevel } from '@nestjs/common';
 import * as joi from 'joi';
 
-const validLogLevels = ['log', 'error', 'warn', 'debug', 'verbose', 'fatal'];
+const validLogLevels: LogLevel[] = ['log', 'error', 'warn', 'debug', 'verbose', 'fatal'];
 
 const schema = {
   DATABASE_URL: joi.string().uri().required(),
