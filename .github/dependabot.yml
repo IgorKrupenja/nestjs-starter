@@ -1,10 +1,10 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      time: "00:00"
-      interval: "daily"
+      time: '00:00'
+      interval: 'daily'
       timezone: 'Europe/Tallinn'
     open-pull-requests-limit: 50
     labels:
