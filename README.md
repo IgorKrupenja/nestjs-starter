@@ -29,6 +29,8 @@ pnpm exec prisma db seed
 
 ## Environment Variables
 
+<!-- todo check actual default values! maybe something like log colors needs to be changed in code -->
+
 | Variable | Description | Required | Default Value | Recommended Production Value |
 |----------|-------------|----------|---------------|------------------------------|
 | `DATABASE_URL` | PostgreSQL connection string | ✅ Yes | N/A | |
