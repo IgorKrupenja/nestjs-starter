@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from 'compression';
 
+import { appConfigFactory } from './config/app-config.factory.js';
 import { AppConfig } from './config/interfaces/app-config.interface.js';
 import { PrismaExceptionFilter } from './prisma/filters/prisma-exception.filter.js';
 
@@ -11,7 +12,11 @@ import { PrismaExceptionFilter } from './prisma/filters/prisma-exception.filter.
  * This function is used by both the main application and tests
  * to ensure consistent configuration
  */
-export function configureApp(app: INestApplication, config: AppConfig): void {
+export function configureApp(app: INestApplication): void {
+  // Get validated config
+  const config = app.get<AppConfig>(appConfigFactory.KEY);
+  const configService = app.get(ConfigService);
+
   // Configure logger with validated config
   const logger = new ConsoleLogger({
     logLevels: config.loggerLogLevels,
@@ -39,7 +44,6 @@ export function configureApp(app: INestApplication, config: AppConfig): void {
 
   // Transform Prisma errors into appropriate HTTP responses (e.g., P2002 → 409 Conflict)
   // Otherwise, 500 would be returned
-  const configService = app.get(ConfigService);
   app.useGlobalFilters(new PrismaExceptionFilter(configService));
 
   // Setup Swagger API documentation (if enabled)

@@ -4,8 +4,6 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { configureApp } from '@src/app.config.js';
 import { AppModule } from '@src/app.module.js';
-import { appConfigFactory } from '@src/config/app-config.factory.js';
-import { AppConfig } from '@src/config/interfaces/app-config.interface.js';
 import { PrismaService } from '@src/prisma/services/prisma.service.js';
 
 /**
@@ -23,10 +21,9 @@ export async function createTestApp(): Promise<{
 
   const app = moduleFixture.createNestApplication();
   const prisma = app.get<PrismaService>(PrismaService);
-  const appConfig = app.get<AppConfig>(appConfigFactory.KEY);
 
   // Apply the same configuration as the production app (logger, compression, pipes, filters, swagger)
-  configureApp(app, appConfig);
+  configureApp(app);
 
   await app.init();
   const server = app.getHttpServer() as Server;
