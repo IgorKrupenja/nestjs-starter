@@ -1,4 +1,4 @@
-import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
+import { ConsoleLogger, INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from 'compression';
@@ -12,6 +12,14 @@ import { PrismaExceptionFilter } from './prisma/filters/prisma-exception.filter.
  * to ensure consistent configuration
  */
 export function configureApp(app: INestApplication, config: AppConfig): void {
+  // Configure logger with validated config
+  const logger = new ConsoleLogger({
+    logLevels: config.loggerLogLevels,
+    timestamp: true,
+    colors: config.loggerColors,
+  });
+  app.useLogger(logger);
+
   app.use(compression());
 
   // Enable URI versioning (e.g., /v1/posts)

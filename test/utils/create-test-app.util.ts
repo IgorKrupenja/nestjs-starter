@@ -23,11 +23,9 @@ export async function createTestApp(): Promise<{
 
   const app = moduleFixture.createNestApplication();
   const prisma = app.get<PrismaService>(PrismaService);
-
-  // Get validated config
   const appConfig = app.get<AppConfig>(appConfigFactory.KEY);
 
-  // Apply the same configuration as the production app
+  // Apply the same configuration as the production app (logger, compression, pipes, filters, swagger)
   configureApp(app, appConfig);
 
   await app.init();
