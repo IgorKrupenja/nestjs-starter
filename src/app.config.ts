@@ -13,11 +13,9 @@ import { PrismaExceptionFilter } from './prisma/filters/prisma-exception.filter.
  * to ensure consistent configuration
  */
 export function configureApp(app: INestApplication): void {
-  // Get validated config
   const config = app.get<AppConfig>(appConfigFactory.KEY);
   const configService = app.get(ConfigService);
 
-  // Configure logger with validated config
   const logger = new ConsoleLogger({
     logLevels: config.loggerLogLevels,
     timestamp: true,
