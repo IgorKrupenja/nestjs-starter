@@ -11,7 +11,6 @@ export class DatabaseUtil {
    * Useful for cleaning up test data between tests
    */
   async truncate(): Promise<void> {
-    // Get the schema from Prisma's configuration
     const schema = this.getSchema();
 
     const tables = await this.prisma.$queryRawUnsafe<Array<{ tablename: string }>>(
@@ -38,7 +37,6 @@ export class DatabaseUtil {
    * Useful for ensuring consistent IDs in tests
    */
   async resetSequences(): Promise<void> {
-    // Get the schema from Prisma's configuration
     const schema = this.getSchema();
 
     // PostgreSQL specific: reset sequences for auto-incrementing IDs
