@@ -38,7 +38,7 @@ The application automatically loads the appropriate config file based on the `NO
 
 | Variable | Description | Required | Default Value | Recommended Production Value |
 |----------|-------------|----------|---------------|------------------------------|
-| `DATABASE_URL` | PostgreSQL connection string | ✅ Yes | N/A | |
+| `DATABASE_URL` | PostgreSQL connection string | ✅ Yes | | |
 | `LOGGER_LOG_LEVELS` | Comma-separated log levels (log, error, warn, debug, verbose, fatal) |  | `error,warn,log` | `error,warn,log` |
 | `LOGGER_COLORS` | Enable colored console output |  | `false` | `false` |
 | `API_DOCUMENTATION_ENABLED` | Enable Swagger API documentation |  | `false` | `false` |
