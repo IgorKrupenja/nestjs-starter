@@ -1,7 +1,10 @@
-import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
+import { ConsoleLogger, INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from 'compression';
 
+import { appConfigFactory } from './config/app-config.factory.js';
+import { AppConfig } from './config/interfaces/app-config.interface.js';
 import { PrismaExceptionFilter } from './prisma/filters/prisma-exception.filter.js';
 
 /**
@@ -10,6 +13,16 @@ import { PrismaExceptionFilter } from './prisma/filters/prisma-exception.filter.
  * to ensure consistent configuration
  */
 export function configureApp(app: INestApplication): void {
+  const config = app.get<AppConfig>(appConfigFactory.KEY);
+  const configService = app.get(ConfigService);
+
+  const logger = new ConsoleLogger({
+    logLevels: config.loggerLogLevels,
+    timestamp: true,
+    colors: config.loggerColors,
+  });
+  app.useLogger(logger);
+
   app.use(compression());
 
   // Enable URI versioning (e.g., /v1/posts)
@@ -29,17 +42,17 @@ export function configureApp(app: INestApplication): void {
 
   // Transform Prisma errors into appropriate HTTP responses (e.g., P2002 → 409 Conflict)
   // Otherwise, 500 would be returned
-  app.useGlobalFilters(new PrismaExceptionFilter());
+  app.useGlobalFilters(new PrismaExceptionFilter(configService));
 
   // Setup Swagger API documentation (if enabled)
-  if (process.env.API_DOCUMENTATION_ENABLED === 'true') {
-    const config = new DocumentBuilder()
+  if (config.apiDocumentationEnabled) {
+    const swaggerConfig = new DocumentBuilder()
       .addBearerAuth({ in: 'header', type: 'http' })
       .setTitle('NestJS Starter')
       .setDescription('API documentation for NestJS Starter project')
       .setVersion('1.0.0')
       .build();
-    const document = SwaggerModule.createDocument(app, config);
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
     SwaggerModule.setup('documentation', app, document, {
       swaggerOptions: {
         operationsSorter: 'alpha',

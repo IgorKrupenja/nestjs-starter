@@ -1,8 +1,6 @@
-import { parseArgs } from 'node:util';
-
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@src/generated/prisma/client.js';
 import type { PrismaClient as PrismaClientType } from '@src/generated/prisma/client.js';
-import { PrismaPg } from '@prisma/adapter-pg';
 
 import { seedPosts } from './data/posts.seeder.js';
 import { seedUsers } from './data/users.seeder.js';
@@ -12,10 +10,6 @@ const adapter = new PrismaPg({
 });
 
 const prisma = new PrismaClient({ adapter });
-
-const options = {
-  environment: { type: 'string' as const },
-};
 
 /**
  * Development seeders - runs all seeders in order
@@ -35,29 +29,13 @@ async function seedDevelopment(prisma: PrismaClientType): Promise<void> {
   console.log('\n✅ Development data seeded successfully!');
 }
 
-/**
- * Test seeders - minimal data for testing
- */
-async function seedTest(prisma: PrismaClientType): Promise<void> {
-  console.log('🧪 Seeding test data...\n');
-
-  // Add minimal test data here
-  await seedUsers(prisma);
-
-  console.log('\n✅ Test data seeded successfully!');
-}
-
 async function main(): Promise<void> {
-  const {
-    values: { environment },
-  } = parseArgs({ options });
-
-  switch (environment) {
+  switch (process.env.NODE_ENV) {
     case 'development':
       await seedDevelopment(prisma);
       break;
     case 'test':
-      await seedTest(prisma);
+      console.log('🧪  Test environment - skipping seed');
       break;
     case 'production':
       console.log('⚠️  Production environment - skipping seed');

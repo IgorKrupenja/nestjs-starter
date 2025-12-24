@@ -25,10 +25,8 @@ corepack up
 echo "Installing dependencies..."
 pnpm install
 
-cp .env.example .env
-
 echo "Starting Docker container..."
-docker compose up -d
+docker compose up db -d
 
 echo "Running Prisma setup..."
 pnpm exec prisma migrate dev

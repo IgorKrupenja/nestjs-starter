@@ -1,10 +1,12 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus, Logger } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { AppConfig } from '@src/config/interfaces/app-config.interface.js';
 import { Prisma } from '@src/generated/prisma/client.js';
 import { Response } from 'express';
 
 @Catch(Prisma.PrismaClientKnownRequestError)
 export class PrismaExceptionFilter implements ExceptionFilter {
-  private readonly logger = new Logger(PrismaExceptionFilter.name);
+  constructor(private readonly configService: ConfigService) {}
 
   catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
@@ -36,7 +38,8 @@ export class PrismaExceptionFilter implements ExceptionFilter {
   }
 
   private getMessage(exception: Prisma.PrismaClientKnownRequestError): string {
-    const isDevelopment = process.env.NODE_ENV !== 'production';
+    const appConfig = this.configService.get<AppConfig>('app')!;
+    const isDevelopment = appConfig.nodeEnv !== 'production';
 
     switch (exception.code) {
       case 'P2002':
