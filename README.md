@@ -43,8 +43,6 @@ The application automatically loads the appropriate config file based on the `NO
 | `LOGGER_COLORS` | Enable colored console output |  | `false` | `false` |
 | `API_DOCUMENTATION_ENABLED` | Enable Swagger API documentation |  | `false` | `false` |
 
-**Note:** All environment variables are validated at application startup using Joi schemas. Invalid configurations will prevent the application from starting with a clear error message.
-
 ## Run the project
 
 ```bash
