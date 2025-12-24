@@ -8,11 +8,11 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createTestApp } from './utils/create-test-app.util.js';
 
 describe('Swagger Documentation (E2E)', () => {
-  describe('when API_DOCUMENTATION_ENABLED is true', () => {
-    let app: INestApplication;
-    let server: Server;
-    let prisma: PrismaService;
+  let app: INestApplication;
+  let server: Server;
+  let prisma: PrismaService;
 
+  describe('when API_DOCUMENTATION_ENABLED is true', () => {
     beforeAll(async () => {
       process.env.API_DOCUMENTATION_ENABLED = 'true';
       ({ app, server, prisma } = await createTestApp());
@@ -42,10 +42,6 @@ describe('Swagger Documentation (E2E)', () => {
   });
 
   describe('when API_DOCUMENTATION_ENABLED is false', () => {
-    let app: INestApplication;
-    let server: Server;
-    let prisma: PrismaService;
-
     beforeAll(async () => {
       process.env.API_DOCUMENTATION_ENABLED = 'false';
       ({ app, server, prisma } = await createTestApp());
@@ -67,10 +63,6 @@ describe('Swagger Documentation (E2E)', () => {
   });
 
   describe('when API_DOCUMENTATION_ENABLED is not set', () => {
-    let app: INestApplication;
-    let server: Server;
-    let prisma: PrismaService;
-
     beforeAll(async () => {
       delete process.env.API_DOCUMENTATION_ENABLED;
       ({ app, server, prisma } = await createTestApp());
