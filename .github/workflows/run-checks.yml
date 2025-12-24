@@ -54,7 +54,7 @@ jobs:
         run: pnpm exec prisma migrate deploy
       - name: Run e2e tests
         env:
-          TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter
         run: pnpm run test:e2e:run
   build:
     if: github.event.pull_request.draft == false

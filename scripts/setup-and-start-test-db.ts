@@ -6,7 +6,6 @@
 
 import { execSync } from 'node:child_process';
 
-// TODO: Hardcoded for now, will fix with ConfigService
 const testDatabaseUrl =
   'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
 
@@ -24,7 +23,7 @@ try {
     stdio: 'inherit',
     env: {
       ...process.env,
-      DATABASE_URL: testDatabaseUrl,
+      DATABASE_URL: process.env.DATABASE_URL || testDatabaseUrl,
     },
   });
 
