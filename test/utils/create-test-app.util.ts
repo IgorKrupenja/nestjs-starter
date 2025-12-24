@@ -3,9 +3,9 @@ import type { Server } from 'node:http';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { configureApp } from '@src/app.config.js';
+import { AppModule } from '@src/app.module.js';
 import { appConfigFactory } from '@src/config/app-config.factory.js';
 import { AppConfig } from '@src/config/interfaces/app-config.interface.js';
-import { AppModule } from '@src/app.module.js';
 import { PrismaService } from '@src/prisma/services/prisma.service.js';
 
 /**
