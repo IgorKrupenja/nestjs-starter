@@ -8,8 +8,7 @@ describe('appConfigSchema', () => {
       const result = appConfigSchema.validate({
         DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',
       });
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      expect(result.value?.LOGGER_LOG_LEVELS).toBe('error,warn,log');
+      expect((result.value as Record<string, unknown>).LOGGER_LOG_LEVELS).toBe('error,warn,log');
     });
 
     it('should accept valid log levels', () => {
