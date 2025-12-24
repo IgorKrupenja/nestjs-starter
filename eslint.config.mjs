@@ -6,7 +6,7 @@ import unusedImports from 'eslint-plugin-unused-imports';
 import * as importPlugin from 'eslint-plugin-import';
 import vitest from "@vitest/eslint-plugin";
 
-export default tseslint.config(
+export default [
   {
     files: ["**/*.spec.ts"],
     plugins: {
@@ -78,4 +78,4 @@ export default tseslint.config(
       ],
     },
   },
-);
+];
