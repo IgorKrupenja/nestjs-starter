@@ -1,4 +1,5 @@
 import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from 'compression';
 
@@ -30,7 +31,8 @@ export function configureApp(app: INestApplication, config: AppConfig): void {
 
   // Transform Prisma errors into appropriate HTTP responses (e.g., P2002 → 409 Conflict)
   // Otherwise, 500 would be returned
-  app.useGlobalFilters(new PrismaExceptionFilter());
+  const configService = app.get(ConfigService);
+  app.useGlobalFilters(new PrismaExceptionFilter(configService));
 
   // Setup Swagger API documentation (if enabled)
   if (config.apiDocumentationEnabled) {
