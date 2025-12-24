@@ -1,23 +1,25 @@
 import type { Server } from 'node:http';
 
 import { INestApplication } from '@nestjs/common';
+import { PrismaService } from '@src/prisma/services/prisma.service.js';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-import { createTestApp } from './helpers/test-app.js';
+import { createTestApp } from './utils/create-test-app.util.js';
 
 describe('Swagger Documentation (E2E)', () => {
-  describe('when API_DOCUMENTATION_ENABLED is true', () => {
-    let app: INestApplication;
-    let server: Server;
+  let app: INestApplication;
+  let server: Server;
+  let prisma: PrismaService;
 
+  describe('when API_DOCUMENTATION_ENABLED is true', () => {
     beforeAll(async () => {
       process.env.API_DOCUMENTATION_ENABLED = 'true';
-      app = await createTestApp();
-      server = app.getHttpServer() as Server;
+      ({ app, server, prisma } = await createTestApp());
     });
 
     afterAll(async () => {
+      await prisma.$disconnect();
       await app.close();
       delete process.env.API_DOCUMENTATION_ENABLED;
     });
@@ -40,16 +42,13 @@ describe('Swagger Documentation (E2E)', () => {
   });
 
   describe('when API_DOCUMENTATION_ENABLED is false', () => {
-    let app: INestApplication;
-    let server: Server;
-
     beforeAll(async () => {
       process.env.API_DOCUMENTATION_ENABLED = 'false';
-      app = await createTestApp();
-      server = app.getHttpServer() as Server;
+      ({ app, server, prisma } = await createTestApp());
     });
 
     afterAll(async () => {
+      await prisma.$disconnect();
       await app.close();
       delete process.env.API_DOCUMENTATION_ENABLED;
     });
@@ -64,16 +63,13 @@ describe('Swagger Documentation (E2E)', () => {
   });
 
   describe('when API_DOCUMENTATION_ENABLED is not set', () => {
-    let app: INestApplication;
-    let server: Server;
-
     beforeAll(async () => {
       delete process.env.API_DOCUMENTATION_ENABLED;
-      app = await createTestApp();
-      server = app.getHttpServer() as Server;
+      ({ app, server, prisma } = await createTestApp());
     });
 
     afterAll(async () => {
+      await prisma.$disconnect();
       await app.close();
     });
 

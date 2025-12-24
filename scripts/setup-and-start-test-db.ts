@@ -6,8 +6,8 @@
 
 import { execSync } from 'node:child_process';
 
+// TODO: Hardcoded for now, will fix with ConfigService
 const testDatabaseUrl =
-  process.env.TEST_DATABASE_URL ||
   'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
 
 console.log('🚀 Starting test database and running migrations...\n');

@@ -1,31 +1,24 @@
 import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AppModule } from '@src/app.module.js';
-import { PrismaExceptionFilter } from '@src/prisma/filters/prisma-exception.filter.js';
+import compression from 'compression';
+
+import { PrismaExceptionFilter } from './prisma/filters/prisma-exception.filter.js';
 
 /**
- * Creates a NestJS application instance for E2E testing
- * This helper ensures consistent app configuration across all E2E tests
- * The app connects to the test database (port 5433) for complete isolation
+ * Configures the NestJS application with common settings
+ * This function is used by both the main application and tests
+ * to ensure consistent configuration
  */
-export async function createTestApp(): Promise<INestApplication> {
-  // Set test database URL for the app
-  process.env.DATABASE_URL =
-    process.env.TEST_DATABASE_URL ||
-    'postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter';
+export function configureApp(app: INestApplication): void {
+  app.use(compression());
 
-  const moduleFixture: TestingModule = await Test.createTestingModule({
-    imports: [AppModule],
-  }).compile();
-
-  const app = moduleFixture.createNestApplication();
-
-  // Apply the same configuration as the production app
+  // Enable URI versioning (e.g., /v1/posts)
   app.enableVersioning({
     type: VersioningType.URI,
   });
 
+  // Validate DTOs for incoming requests globally
+  // Also rejects requests with non-whitelisted properties
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -34,6 +27,8 @@ export async function createTestApp(): Promise<INestApplication> {
     }),
   );
 
+  // Transform Prisma errors into appropriate HTTP responses (e.g., P2002 → 409 Conflict)
+  // Otherwise, 500 would be returned
   app.useGlobalFilters(new PrismaExceptionFilter());
 
   // Setup Swagger API documentation (if enabled)
@@ -53,8 +48,4 @@ export async function createTestApp(): Promise<INestApplication> {
       },
     });
   }
-
-  await app.init();
-
-  return app;
 }
