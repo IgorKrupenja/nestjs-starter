@@ -5,6 +5,6 @@ export interface AppConfig {
   readonly loggerLogLevels: LogLevel[];
   readonly loggerColors: boolean;
   readonly apiDocumentationEnabled: boolean;
-  // todo do we need this
+  // Used in tests with ConfigService mocks
   readonly nodeEnv: string;
 }
