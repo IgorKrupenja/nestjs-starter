@@ -18,7 +18,6 @@ corepack enable pnpm
 corepack up
 # Install dependencies
 pnpm install
-cp .env.example .env
 # Start DB
 docker compose up db -d
 # Prepare Prisma
@@ -29,16 +28,22 @@ pnpm exec prisma db seed
 
 ## Environment Variables
 
-<!-- todo check actual default values! maybe something like log colors needs to be changed in code -->
+Environment-specific configuration files are located in the `config/` folder:
+
+- `config/development.env` - Local development settings (with values)
+- `config/production.env` - Production template (variable names only, values set via environment)
+- `config/test.env` - Test environment settings (with values)
+
+The application automatically loads the appropriate config file based on the `NODE_ENV` environment variable.
 
 | Variable | Description | Required | Default Value | Recommended Production Value |
 |----------|-------------|----------|---------------|------------------------------|
 | `DATABASE_URL` | PostgreSQL connection string | ✅ Yes | N/A | |
-| `LOGGER_LOG_LEVELS` | Comma-separated log levels (error, warn, log, debug) |  | `error,warn,log` | `error,warn,log` |
+| `LOGGER_LOG_LEVELS` | Comma-separated log levels (log, error, warn, debug, verbose, fatal) |  | `error,warn,log` | `error,warn,log` |
 | `LOGGER_COLORS` | Enable colored console output |  | `false` | `false` |
 | `API_DOCUMENTATION_ENABLED` | Enable Swagger API documentation |  | `false` | `false` |
 
-**[Example `.env` file](.env.example).**
+**Note:** All environment variables are validated at application startup using Joi schemas. Invalid configurations will prevent the application from starting with a clear error message.
 
 ## Run the project
 
