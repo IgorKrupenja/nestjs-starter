@@ -1,7 +1,7 @@
 import { CallHandler, ExecutionContext, Logger } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { of } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { RequestLogger } from './request-logger.interceptor.js';
 
