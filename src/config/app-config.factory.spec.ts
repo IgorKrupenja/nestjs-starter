@@ -22,6 +22,7 @@ describe('appConfigFactory', () => {
         LOGGER_LOG_LEVELS: 'error,warn,log',
         LOGGER_COLORS: true,
         API_DOCUMENTATION_ENABLED: false,
+        API_CORS_ORIGIN: '*',
         NODE_ENV: 'development',
       };
 
@@ -34,6 +35,7 @@ describe('appConfigFactory', () => {
         loggerLogLevels: ['error', 'warn', 'log'],
         loggerColors: true,
         apiDocumentationEnabled: false,
+        corsOrigin: '*',
         nodeEnv: 'development',
       });
     });
@@ -44,6 +46,7 @@ describe('appConfigFactory', () => {
         LOGGER_LOG_LEVELS: 'error',
         LOGGER_COLORS: false,
         API_DOCUMENTATION_ENABLED: true,
+        API_CORS_ORIGIN: 'https://example.com',
         NODE_ENV: 'production',
       };
 
@@ -60,6 +63,7 @@ describe('appConfigFactory', () => {
         LOGGER_LOG_LEVELS: 'log,error,warn,debug,verbose,fatal',
         LOGGER_COLORS: false,
         API_DOCUMENTATION_ENABLED: false,
+        API_CORS_ORIGIN: '',
         NODE_ENV: 'test',
       };
 
@@ -76,6 +80,7 @@ describe('appConfigFactory', () => {
         LOGGER_LOG_LEVELS: 'error , warn , log',
         LOGGER_COLORS: false,
         API_DOCUMENTATION_ENABLED: false,
+        API_CORS_ORIGIN: '*',
         NODE_ENV: 'development',
       };
 
@@ -95,6 +100,7 @@ describe('appConfigFactory', () => {
           LOGGER_LOG_LEVELS: 'error',
           LOGGER_COLORS: false,
           API_DOCUMENTATION_ENABLED: false,
+          API_CORS_ORIGIN: '*',
           NODE_ENV: env,
         };
 
@@ -111,12 +117,108 @@ describe('appConfigFactory', () => {
     });
   });
 
+  describe('CORS origin parsing', () => {
+    it('should parse single CORS origin', () => {
+      const mockValidatedEnv = {
+        DATABASE_URL: 'postgresql://user:pass@localhost:5432/testdb',
+        LOGGER_LOG_LEVELS: 'error',
+        LOGGER_COLORS: false,
+        API_DOCUMENTATION_ENABLED: false,
+        API_CORS_ORIGIN: 'https://example.com',
+        NODE_ENV: 'development',
+      };
+
+      vi.spyOn(ConfigUtil, 'validate').mockReturnValue(mockValidatedEnv);
+
+      const config = appConfigFactory();
+
+      expect(config.corsOrigin).toBe('https://example.com');
+    });
+
+    it('should parse multiple CORS origins', () => {
+      const mockValidatedEnv = {
+        DATABASE_URL: 'postgresql://user:pass@localhost:5432/testdb',
+        LOGGER_LOG_LEVELS: 'error',
+        LOGGER_COLORS: false,
+        API_DOCUMENTATION_ENABLED: false,
+        API_CORS_ORIGIN: 'https://example.com,https://app.example.com,http://localhost:3000',
+        NODE_ENV: 'development',
+      };
+
+      vi.spyOn(ConfigUtil, 'validate').mockReturnValue(mockValidatedEnv);
+
+      const config = appConfigFactory();
+
+      expect(config.corsOrigin).toEqual([
+        'https://example.com',
+        'https://app.example.com',
+        'http://localhost:3000',
+      ]);
+    });
+
+    it('should trim whitespace from CORS origins', () => {
+      const mockValidatedEnv = {
+        DATABASE_URL: 'postgresql://user:pass@localhost:5432/testdb',
+        LOGGER_LOG_LEVELS: 'error',
+        LOGGER_COLORS: false,
+        API_DOCUMENTATION_ENABLED: false,
+        API_CORS_ORIGIN: 'https://example.com , https://app.example.com , http://localhost:3000',
+        NODE_ENV: 'development',
+      };
+
+      vi.spyOn(ConfigUtil, 'validate').mockReturnValue(mockValidatedEnv);
+
+      const config = appConfigFactory();
+
+      expect(config.corsOrigin).toEqual([
+        'https://example.com',
+        'https://app.example.com',
+        'http://localhost:3000',
+      ]);
+    });
+
+    it('should handle wildcard CORS origin', () => {
+      const mockValidatedEnv = {
+        DATABASE_URL: 'postgresql://user:pass@localhost:5432/testdb',
+        LOGGER_LOG_LEVELS: 'error',
+        LOGGER_COLORS: false,
+        API_DOCUMENTATION_ENABLED: false,
+        API_CORS_ORIGIN: '*',
+        NODE_ENV: 'development',
+      };
+
+      vi.spyOn(ConfigUtil, 'validate').mockReturnValue(mockValidatedEnv);
+
+      const config = appConfigFactory();
+
+      expect(config.corsOrigin).toBe('*');
+    });
+
+    it('should return empty string when CORS origin is empty string', () => {
+      const mockValidatedEnv = {
+        DATABASE_URL: 'postgresql://user:pass@localhost:5432/testdb',
+        LOGGER_LOG_LEVELS: 'error',
+        LOGGER_COLORS: false,
+        API_DOCUMENTATION_ENABLED: false,
+        API_CORS_ORIGIN: '',
+        NODE_ENV: 'development',
+      };
+
+      vi.spyOn(ConfigUtil, 'validate').mockReturnValue(mockValidatedEnv);
+
+      const config = appConfigFactory();
+
+      expect(config.corsOrigin).toBe('');
+    });
+  });
+
   it('should call ConfigUtil.validate with appConfigSchema', () => {
     const validateSpy = vi.spyOn(ConfigUtil, 'validate').mockReturnValue({
       DATABASE_URL: 'postgresql://user:pass@localhost:5432/testdb',
       LOGGER_LOG_LEVELS: 'error',
       LOGGER_COLORS: false,
       API_DOCUMENTATION_ENABLED: false,
+      API_CORS_ORIGIN: '*',
       NODE_ENV: 'development',
     });
 

@@ -25,6 +25,13 @@ export function configureApp(app: INestApplication): void {
 
   app.use(compression());
 
+  // Enable CORS with dynamic origin configuration
+  if (config.corsOrigin) {
+    app.enableCors({
+      origin: config.corsOrigin,
+    });
+  }
+
   // Enable URI versioning (e.g., /v1/posts)
   app.enableVersioning({
     type: VersioningType.URI,
@@ -35,7 +42,6 @@ export function configureApp(app: INestApplication): void {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
       transform: true,
     }),
   );
