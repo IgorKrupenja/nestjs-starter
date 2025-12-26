@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseInterceptors,
   Version,
 } from '@nestjs/common';
 import {
@@ -19,11 +20,13 @@ import {
 } from '@nestjs/swagger';
 import { PostModel } from '@src/generated/prisma/models';
 
+import { RequestLogger } from '../../common/interceptors/request-logger.interceptor.js';
 import { CreatePostDto } from '../dtos/create-post-draft.dto.js';
 import { PostService } from '../services/post.service.js';
 
 @ApiTags('Posts')
 @Controller('posts')
+@UseInterceptors(RequestLogger)
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
