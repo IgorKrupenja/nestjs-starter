@@ -1,5 +1,6 @@
 import eslint from '@eslint/js';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import prettier from 'eslint-plugin-prettier';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import unusedImports from 'eslint-plugin-unused-imports';
@@ -40,6 +41,7 @@ export default [
     plugins: {
       'unused-imports': unusedImports,
       'import': importPlugin,
+      'prettier': prettier,
     },
     rules: {
       '@typescript-eslint/explicit-function-return-type': 'error',
@@ -50,6 +52,45 @@ export default [
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
       '@typescript-eslint/unbound-method': 'off',
+      '@typescript-eslint/naming-convention': [
+        'warn',
+        {
+          selector: 'default',
+          format: ['camelCase'],
+        },
+        {
+          selector: ['enumMember', 'typeLike'],
+          format: ['PascalCase'],
+        },
+        {
+          selector: 'classProperty',
+          modifiers: ['readonly'],
+          format: ['camelCase', 'UPPER_CASE'],
+        },
+        {
+          selector: 'function',
+          format: ['camelCase', 'PascalCase'],
+        },
+        {
+          selector: ['objectLiteralProperty', 'typeProperty'],
+          format: ['camelCase', 'PascalCase', 'snake_case', 'UPPER_CASE'],
+        },
+        {
+          selector: 'objectLiteralProperty',
+          modifiers: ['requiresQuotes'],
+          format: null,
+        },
+        {
+          selector: 'variable',
+          modifiers: ['const'],
+          format: ['camelCase', 'UPPER_CASE'],
+        },
+        {
+          selector: 'variable',
+          types: ['function'],
+          format: ['camelCase', 'PascalCase'],
+        },
+      ],
       'no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': [
@@ -76,6 +117,7 @@ export default [
           ignoreDeclarationSort: true,
         },
       ],
+      'prettier/prettier': 'error',
     },
   },
 ];
