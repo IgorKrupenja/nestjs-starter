@@ -4,7 +4,6 @@
   "typescript.preferences.importModuleSpecifier": "relative",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "always",
-    "source.fixAll.stylelint": "always"
   },
   "editor.formatOnSave": true,
   "[yaml][github-actions-workflow][typescript][json]": {
