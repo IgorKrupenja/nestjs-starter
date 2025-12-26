@@ -3,7 +3,7 @@
   "javascript.preferences.importModuleSpecifierEnding": "js",
   "typescript.preferences.importModuleSpecifier": "relative",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "always"
+    "source.fixAll.eslint": "always",
   },
   "editor.formatOnSave": true,
   "[yaml][github-actions-workflow][typescript][json]": {
