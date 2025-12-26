@@ -41,7 +41,7 @@ describe('RequestLogger', () => {
     expect(interceptor).toBeDefined();
   });
 
-  it('should log request and response data', (done) => {
+  it('should log request and response data', () => {
     const logSpy = vi.spyOn(Logger.prototype, 'log');
 
     interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
@@ -52,12 +52,11 @@ describe('RequestLogger', () => {
           expect.stringContaining('Request: {method: GET, url: /test'),
         );
         expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Response: {statusCode: 200'));
-        done();
       },
     });
   });
 
-  it('should handle empty response data', (done) => {
+  it('should handle empty response data', () => {
     mockCallHandler = {
       handle: vi.fn().mockReturnValue(of(null)),
     };
@@ -67,7 +66,6 @@ describe('RequestLogger', () => {
     interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
       next: () => {
         expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('responseData: {}'));
-        done();
       },
     });
   });
