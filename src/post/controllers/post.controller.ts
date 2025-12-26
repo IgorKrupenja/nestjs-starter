@@ -17,10 +17,14 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { PostModel } from '@src/generated/prisma/models';
 
+import { ApiOkDataWithMetaResponse } from '../../common/decorators/api-data-with-meta-response.decorator.js';
+import { CountMetaDto } from '../../common/dtos/count-meta.dto.js';
+import { DataWithMetaResponseDto } from '../../common/dtos/data-with-meta-response.dto.js';
 import { RequestLogger } from '../../common/interceptors/request-logger.interceptor.js';
 import { CreatePostDto } from '../dtos/create-post-draft.dto.js';
 import { PostService } from '../services/post.service.js';
@@ -33,7 +37,6 @@ export class PostController {
 
   @Version('1')
   @Get('/:id')
-  @ApiOkResponse({ description: 'Post found' })
   @ApiNotFoundResponse({ description: 'Post not found' })
   @ApiOperation({ summary: 'Get a post by ID' })
   async getPost(@Param('id', ParseIntPipe) id: number): Promise<PostModel> {
@@ -44,24 +47,34 @@ export class PostController {
 
   @Version('1')
   @Get('/')
-  @ApiOkResponse({ description: 'List of published posts' })
+  @ApiOkDataWithMetaResponse({
+    data: { type: PostModel, isArray: true },
+    meta: { type: CountMetaDto },
+  })
   @ApiOperation({ summary: 'Get all published posts' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
   async getPublishedPosts(
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
     @Query('offset', new ParseIntPipe({ optional: true })) offset?: number,
-  ): Promise<PostModel[]> {
+  ): Promise<DataWithMetaResponseDto<PostModel[], CountMetaDto>> {
     return this.postService.getPublishedPosts({ limit, offset });
   }
 
   @Version('1')
   @Get('/search/:searchString')
-  @ApiOkResponse({ description: 'List of matching posts' })
+  @ApiOkDataWithMetaResponse({
+    data: { type: PostModel, isArray: true },
+    meta: { type: CountMetaDto },
+  })
   @ApiOperation({ summary: 'Search posts by title or content' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
   async getFilteredPosts(
     @Param('searchString') searchString: string,
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
     @Query('offset', new ParseIntPipe({ optional: true })) offset?: number,
-  ): Promise<PostModel[]> {
+  ): Promise<DataWithMetaResponseDto<PostModel[], CountMetaDto>> {
     return this.postService.getFilteredPosts(searchString, { limit, offset });
   }
 

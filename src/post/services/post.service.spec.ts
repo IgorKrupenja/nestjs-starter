@@ -52,11 +52,10 @@ describe('PostService', () => {
         { id: 2, title: 'Post 2', content: 'Content 2', published: false, authorId: 2 },
       ];
 
-      prisma.post.findMany.mockResolvedValueOnce(mockPosts);
+      (prisma.$transaction as any).mockResolvedValueOnce([mockPosts, mockPosts.length]);
 
       const result = await postService.getPosts({});
-      expect(result).toEqual(mockPosts);
-      expect(prisma.post.findMany).toHaveBeenCalledWith({});
+      expect(result).toEqual({ data: mockPosts, meta: { count: mockPosts.length } });
     });
   });
 
@@ -66,13 +65,19 @@ describe('PostService', () => {
         { id: 1, title: 'Post 1', content: 'Content 1', published: true, authorId: 1 },
         { id: 3, title: 'Post 3', content: 'Content 3', published: true, authorId: 2 },
       ];
+      const mockResponse = {
+        data: mockPublishedPosts,
+        meta: { count: mockPublishedPosts.length },
+      };
 
-      vi.spyOn(postService, 'getPosts').mockResolvedValueOnce(mockPublishedPosts);
+      vi.spyOn(postService, 'getPosts').mockResolvedValueOnce(mockResponse);
 
       const result = await postService.getPublishedPosts();
-      expect(result).toEqual(mockPublishedPosts);
+      expect(result).toEqual(mockResponse);
       expect(postService.getPosts).toHaveBeenCalledWith({
         where: { published: true },
+        skip: undefined,
+        take: undefined,
       });
     });
   });
@@ -84,20 +89,26 @@ describe('PostService', () => {
         { id: 1, title: 'Test Post', content: 'Content 1', published: true, authorId: 1 },
         { id: 2, title: 'Post 2', content: 'Test content', published: false, authorId: 2 },
       ];
+      const mockResponse = {
+        data: mockFilteredPosts,
+        meta: { count: mockFilteredPosts.length },
+      };
 
-      vi.spyOn(postService, 'getPosts').mockResolvedValueOnce(mockFilteredPosts);
+      vi.spyOn(postService, 'getPosts').mockResolvedValueOnce(mockResponse);
 
       const result = await postService.getFilteredPosts(searchString);
-      expect(result).toEqual(mockFilteredPosts);
+      expect(result).toEqual(mockResponse);
       expect(postService.getPosts).toHaveBeenCalledWith({
         where: {
           OR: [{ title: { contains: searchString } }, { content: { contains: searchString } }],
         },
+        skip: undefined,
+        take: undefined,
       });
     });
   });
 
-  describe('createPost', () => {
+  describe('createDraft', () => {
     it('should create a new post', async () => {
       const mockPost: Post = {
         id: 1,
