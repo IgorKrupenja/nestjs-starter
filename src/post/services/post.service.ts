@@ -14,13 +14,18 @@ export class PostService {
     });
   }
 
-  getPublishedPosts(): Promise<Post[]> {
+  getPublishedPosts(params?: { limit?: number; offset?: number }): Promise<Post[]> {
     return this.getPosts({
       where: { published: true },
+      take: params?.limit,
+      skip: params?.offset,
     });
   }
 
-  getFilteredPosts(searchString: string): Promise<Post[]> {
+  getFilteredPosts(
+    searchString: string,
+    params?: { limit?: number; offset?: number },
+  ): Promise<Post[]> {
     return this.getPosts({
       where: {
         OR: [
@@ -32,6 +37,8 @@ export class PostService {
           },
         ],
       },
+      take: params?.limit,
+      skip: params?.offset,
     });
   }
 

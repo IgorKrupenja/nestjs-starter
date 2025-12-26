@@ -67,7 +67,10 @@ describe('PostController', () => {
 
       const result = await postController.getPublishedPosts();
       expect(result).toEqual(mockPosts);
-      expect(postService.getPublishedPosts).toHaveBeenCalled();
+      expect(postService.getPublishedPosts).toHaveBeenCalledWith({
+        limit: undefined,
+        offset: undefined,
+      });
     });
   });
 
@@ -80,7 +83,10 @@ describe('PostController', () => {
 
       const result = await postController.getFilteredPosts('Test');
       expect(result).toEqual(mockPosts);
-      expect(postService.getFilteredPosts).toHaveBeenCalledWith('Test');
+      expect(postService.getFilteredPosts).toHaveBeenCalledWith('Test', {
+        limit: undefined,
+        offset: undefined,
+      });
     });
   });
 

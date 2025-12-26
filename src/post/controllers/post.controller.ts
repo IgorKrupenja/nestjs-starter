@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   UseInterceptors,
   Version,
 } from '@nestjs/common';
@@ -45,16 +46,23 @@ export class PostController {
   @Get('/')
   @ApiOkResponse({ description: 'List of published posts' })
   @ApiOperation({ summary: 'Get all published posts' })
-  async getPublishedPosts(): Promise<PostModel[]> {
-    return this.postService.getPublishedPosts();
+  async getPublishedPosts(
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+    @Query('offset', new ParseIntPipe({ optional: true })) offset?: number,
+  ): Promise<PostModel[]> {
+    return this.postService.getPublishedPosts({ limit, offset });
   }
 
   @Version('1')
   @Get('/search/:searchString')
   @ApiOkResponse({ description: 'List of matching posts' })
   @ApiOperation({ summary: 'Search posts by title or content' })
-  async getFilteredPosts(@Param('searchString') searchString: string): Promise<PostModel[]> {
-    return this.postService.getFilteredPosts(searchString);
+  async getFilteredPosts(
+    @Param('searchString') searchString: string,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+    @Query('offset', new ParseIntPipe({ optional: true })) offset?: number,
+  ): Promise<PostModel[]> {
+    return this.postService.getFilteredPosts(searchString, { limit, offset });
   }
 
   @Version('1')
