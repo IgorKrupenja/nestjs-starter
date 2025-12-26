@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import Joi from 'joi';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { ConfigUtil } from './config.util';
 
