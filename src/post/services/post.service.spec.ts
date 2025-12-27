@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
 import { Test, TestingModule } from '@nestjs/testing';
 import { Post, PrismaClient } from '@src/generated/prisma/client.js';
 import { PrismaService } from '@src/prisma/services/prisma.service.js';
@@ -38,7 +37,7 @@ describe('PostService', () => {
         authorId: 1,
       };
 
-      (prisma.post.findUnique as any).mockResolvedValueOnce(mockPost);
+      prisma.post.findUnique.mockResolvedValueOnce(mockPost);
 
       const result = await postService.getPost(1);
       expect(result).toEqual(mockPost);
@@ -162,7 +161,7 @@ describe('PostService', () => {
         authorId: 1,
       };
 
-      (prisma.post.create as any).mockResolvedValueOnce(mockPost);
+      prisma.post.create.mockResolvedValueOnce(mockPost);
 
       const postData = {
         title: 'New Post',
@@ -194,7 +193,7 @@ describe('PostService', () => {
         authorId: 1,
       };
 
-      (prisma.post.update as any).mockResolvedValueOnce(mockUpdatedPost);
+      prisma.post.update.mockResolvedValueOnce(mockUpdatedPost);
 
       const result = await postService.publishPost(1);
 
@@ -216,7 +215,7 @@ describe('PostService', () => {
         authorId: 1,
       };
 
-      (prisma.post.delete as any).mockResolvedValueOnce(mockDeletedPost);
+      prisma.post.delete.mockResolvedValueOnce(mockDeletedPost);
 
       const result = await postService.deletePost(1);
       expect(result).toEqual(mockDeletedPost);
