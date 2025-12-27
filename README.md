@@ -94,7 +94,8 @@ pnpm run format
 
 ## Swagger Documentation
 
-**Note:** It's recommended to keep API documentation disabled in production environments for security reasons.
+Automatically generated API documentation can be found
+at [http://localhost:3000/documentation](http://localhost:3000/documentation)
 
 ## Testing Docker image
 
