@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Post, Prisma } from '@src/generated/prisma/client.js';
 import { PrismaService } from '@src/prisma/services/prisma.service.js';
-import { PaginatedResponseDto } from '../../common/dtos/data-with-meta-response.dto.js';
 
+import { PaginatedResponseDto } from '../../common/dtos/data-with-meta-response.dto.js';
 import { CreatePostDto } from '../dtos/create-post-draft.dto.js';
 
 @Injectable()
@@ -46,9 +46,7 @@ export class PostService {
     });
   }
 
-  async getPosts(
-    params: Prisma.PostFindManyArgs,
-  ): Promise<PaginatedResponseDto<Post[]>> {
+  async getPosts(params: Prisma.PostFindManyArgs): Promise<PaginatedResponseDto<Post[]>> {
     const { where } = params;
     const [data, count] = await this.prisma.$transaction([
       this.prisma.post.findMany(params),

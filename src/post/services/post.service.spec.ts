@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
 import { Test, TestingModule } from '@nestjs/testing';
 import { Post, PrismaClient } from '@src/generated/prisma/client.js';
 import { PrismaService } from '@src/prisma/services/prisma.service.js';
@@ -37,7 +38,7 @@ describe('PostService', () => {
         authorId: 1,
       };
 
-      prisma.post.findUnique.mockResolvedValueOnce(mockPost);
+      (prisma.post.findUnique as any).mockResolvedValueOnce(mockPost);
 
       const result = await postService.getPost(1);
       expect(result).toEqual(mockPost);
@@ -52,7 +53,7 @@ describe('PostService', () => {
         { id: 2, title: 'Post 2', content: 'Content 2', published: false, authorId: 2 },
       ];
 
-      (prisma.$transaction as any).mockResolvedValueOnce([mockPosts, mockPosts.length]);
+      prisma.$transaction.mockResolvedValueOnce([mockPosts, mockPosts.length]);
 
       const result = await postService.getPosts({});
       expect(result).toEqual({ data: mockPosts, meta: { count: mockPosts.length } });
@@ -86,7 +87,7 @@ describe('PostService', () => {
     it('should return posts filtered by search string', async () => {
       const searchString = 'test';
       const mockFilteredPosts: Post[] = [
-        { id: 1, title: 'Test Post', content: 'Content 1', published: true, authorId: 1 },
+        { id: 1, title: 'Test Post', content: 'Test Content', published: true, authorId: 1 },
         { id: 2, title: 'Post 2', content: 'Test content', published: false, authorId: 2 },
       ];
       const mockResponse = {
@@ -118,7 +119,7 @@ describe('PostService', () => {
         authorId: 1,
       };
 
-      prisma.post.create.mockResolvedValueOnce(mockPost);
+      (prisma.post.create as any).mockResolvedValueOnce(mockPost);
 
       const postData = {
         title: 'New Post',
@@ -150,7 +151,7 @@ describe('PostService', () => {
         authorId: 1,
       };
 
-      prisma.post.update.mockResolvedValueOnce(mockUpdatedPost);
+      (prisma.post.update as any).mockResolvedValueOnce(mockUpdatedPost);
 
       const result = await postService.publishPost(1);
 
@@ -172,7 +173,7 @@ describe('PostService', () => {
         authorId: 1,
       };
 
-      prisma.post.delete.mockResolvedValueOnce(mockDeletedPost);
+      (prisma.post.delete as any).mockResolvedValueOnce(mockDeletedPost);
 
       const result = await postService.deletePost(1);
       expect(result).toEqual(mockDeletedPost);
