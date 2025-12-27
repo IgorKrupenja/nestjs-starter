@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { DataWithMetaResponseDto } from '@src/common/dtos/data-with-meta-response.dto.js';
 import { Post, Prisma } from '@src/generated/prisma/client.js';
+import { CreatePostDto } from '@src/post/dtos/create-post-draft.dto.js';
 import { PrismaService } from '@src/prisma/services/prisma.service.js';
-
-import { DataWithMetaResponseDto } from '../../common/dtos/data-with-meta-response.dto.js';
-import { CreatePostDto } from '../dtos/create-post-draft.dto.js';
 
 @Injectable()
 export class PostService {
