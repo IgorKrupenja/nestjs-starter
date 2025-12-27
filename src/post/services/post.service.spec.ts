@@ -81,6 +81,26 @@ describe('PostService', () => {
         take: undefined,
       });
     });
+
+    it('should return paginated published posts', async () => {
+      const mockPublishedPosts: Post[] = [
+        { id: 1, title: 'Post 1', content: 'Content 1', published: true, authorId: 1 },
+      ];
+      const mockResponse = {
+        data: mockPublishedPosts,
+        meta: { count: mockPublishedPosts.length },
+      };
+
+      vi.spyOn(postService, 'getPosts').mockResolvedValueOnce(mockResponse);
+
+      const result = await postService.getPublishedPosts({ limit: 10, offset: 5 });
+      expect(result).toEqual(mockResponse);
+      expect(postService.getPosts).toHaveBeenCalledWith({
+        where: { published: true },
+        take: 10,
+        skip: 5,
+      });
+    });
   });
 
   describe('getFilteredPosts', () => {
@@ -105,6 +125,29 @@ describe('PostService', () => {
         },
         skip: undefined,
         take: undefined,
+      });
+    });
+
+    it('should return paginated filtered posts', async () => {
+      const searchString = 'test';
+      const mockFilteredPosts: Post[] = [
+        { id: 1, title: 'Test Post', content: 'Test Content', published: true, authorId: 1 },
+      ];
+      const mockResponse = {
+        data: mockFilteredPosts,
+        meta: { count: mockFilteredPosts.length },
+      };
+
+      vi.spyOn(postService, 'getPosts').mockResolvedValueOnce(mockResponse);
+
+      const result = await postService.getFilteredPosts(searchString, { limit: 10, offset: 5 });
+      expect(result).toEqual(mockResponse);
+      expect(postService.getPosts).toHaveBeenCalledWith({
+        where: {
+          OR: [{ title: { contains: searchString } }, { content: { contains: searchString } }],
+        },
+        take: 10,
+        skip: 5,
       });
     });
   });

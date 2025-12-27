@@ -44,7 +44,7 @@ describe('PostController', () => {
       vi.spyOn(postService, 'getPost').mockResolvedValueOnce(mockPost);
 
       const result = await postController.getPost(1);
-      expect(result).toEqual(mockPost);
+      expect(result).toEqual({ data: mockPost });
       expect(postService.getPost).toHaveBeenCalledWith(1);
     });
 
@@ -73,6 +73,21 @@ describe('PostController', () => {
         offset: undefined,
       });
     });
+
+    it('should return published posts with pagination', async () => {
+      const mockPosts: PostModel[] = [
+        { id: 1, title: 'Post 1', content: 'Content 1', published: true, authorId: 1 },
+      ];
+      const mockResponse = { data: mockPosts, meta: { count: mockPosts.length } };
+      vi.spyOn(postService, 'getPublishedPosts').mockResolvedValueOnce(mockResponse);
+
+      const result = await postController.getPublishedPosts(10, 5);
+      expect(result).toEqual(mockResponse);
+      expect(postService.getPublishedPosts).toHaveBeenCalledWith({
+        limit: 10,
+        offset: 5,
+      });
+    });
   });
 
   describe('getFilteredPosts', () => {
@@ -88,6 +103,21 @@ describe('PostController', () => {
       expect(postService.getFilteredPosts).toHaveBeenCalledWith('Test', {
         limit: undefined,
         offset: undefined,
+      });
+    });
+
+    it('should return filtered posts with pagination', async () => {
+      const mockPosts: PostModel[] = [
+        { id: 1, title: 'Test Post', content: 'Test Content', published: true, authorId: 1 },
+      ];
+      const mockResponse = { data: mockPosts, meta: { count: mockPosts.length } };
+      vi.spyOn(postService, 'getFilteredPosts').mockResolvedValueOnce(mockResponse);
+
+      const result = await postController.getFilteredPosts('Test', 10, 5);
+      expect(result).toEqual(mockResponse);
+      expect(postService.getFilteredPosts).toHaveBeenCalledWith('Test', {
+        limit: 10,
+        offset: 5,
       });
     });
   });
