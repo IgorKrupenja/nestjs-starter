@@ -9,6 +9,10 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import { createTestApp } from './utils/create-test-app.util.js';
 import { DatabaseUtil } from './utils/database.util.js';
+import { CountMetaDto } from '../src/common/dtos/count-meta.dto.js';
+import { DataResponseDto } from '../src/common/dtos/data-response.dto.js';
+import { DataWithMetaResponseDto } from '../src/common/dtos/data-with-meta-response.dto.js';
+import { PostDto } from '../src/post/dtos/post.dto.js';
 
 describe('Post API (E2E)', () => {
   let app: INestApplication;
@@ -99,10 +103,13 @@ describe('Post API (E2E)', () => {
 
       const response = await request(server).get(`/v1/posts/${post.id}`).expect(200);
 
-      expect(response.body).toMatchObject({
-        id: post.id,
-        title: post.title,
-        content: post.content,
+      const body = response.body as DataResponseDto<PostDto>;
+      expect(body).toMatchObject({
+        data: {
+          id: post.id,
+          title: post.title,
+          content: post.content,
+        },
       });
     });
 
@@ -142,15 +149,68 @@ describe('Post API (E2E)', () => {
 
       const response = await request(server).get('/v1/posts').expect(200);
 
-      const posts = response.body as PostModel[];
-      expect(posts).toHaveLength(2);
-      expect(posts.every((post) => post.published)).toBe(true);
+      const body = response.body as DataWithMetaResponseDto<PostDto[], CountMetaDto>;
+      expect(body.data).toHaveLength(2);
+      expect(body.data.every((post) => post.published)).toBe(true);
+      expect(body.meta).toEqual({ count: 2 });
     });
 
-    it('should return empty array when no published posts exist', async () => {
+    it('should return empty data array when no published posts exist', async () => {
       const response = await request(server).get('/v1/posts').expect(200);
 
-      expect(response.body).toEqual([]);
+      const body = response.body as DataWithMetaResponseDto<PostDto[], CountMetaDto>;
+      expect(body.data).toEqual([]);
+      expect(body.meta).toEqual({ count: 0 });
+    });
+
+    it('should return paginated posts', async () => {
+      // Get the test user
+      const user = await prisma.user.findUnique({ where: { email: 'test@example.com' } });
+
+      // Create 5 published posts
+      await prisma.post.createMany({
+        data: [
+          {
+            title: 'Published Post 1',
+            content: 'Content 1',
+            published: true,
+            authorId: user!.id,
+          },
+          {
+            title: 'Published Post 2',
+            content: 'Content 2',
+            published: true,
+            authorId: user!.id,
+          },
+          {
+            title: 'Published Post 3',
+            content: 'Content 3',
+            published: true,
+            authorId: user!.id,
+          },
+          {
+            title: 'Published Post 4',
+            content: 'Content 4',
+            published: true,
+            authorId: user!.id,
+          },
+          {
+            title: 'Published Post 5',
+            content: 'Content 5',
+            published: true,
+            authorId: user!.id,
+          },
+        ],
+      });
+
+      // Get 2 posts, skipping the first 2 (i.e., get posts 3 and 4)
+      const response = await request(server).get('/v1/posts?limit=2&offset=2').expect(200);
+
+      const body = response.body as DataWithMetaResponseDto<PostDto[], CountMetaDto>;
+      expect(body.data).toHaveLength(2);
+      expect(body.data[0].title).toBe('Published Post 3');
+      expect(body.data[1].title).toBe('Published Post 4');
+      expect(body.meta).toEqual({ count: 5 });
     });
   });
 
@@ -221,9 +281,61 @@ describe('Post API (E2E)', () => {
 
       const response = await request(server).get('/v1/posts/search/JavaScript').expect(200);
 
-      const posts = response.body as PostModel[];
-      expect(posts).toHaveLength(1);
-      expect(posts[0]?.title).toContain('JavaScript');
+      const body = response.body as DataWithMetaResponseDto<PostDto[], CountMetaDto>;
+      expect(body.data).toHaveLength(1);
+      expect(body.data[0]?.title).toContain('JavaScript');
+      expect(body.meta).toEqual({ count: 1 });
+    });
+
+    it('should return paginated search results', async () => {
+      // Get the test user
+      const user = await prisma.user.findUnique({ where: { email: 'test@example.com' } });
+
+      await prisma.post.createMany({
+        data: [
+          {
+            title: 'JavaScript Tutorial 1',
+            content: 'Learn JavaScript',
+            published: true,
+            authorId: user!.id,
+          },
+          {
+            title: 'JavaScript Tutorial 2',
+            content: 'Learn JavaScript Advanced',
+            published: true,
+            authorId: user!.id,
+          },
+          {
+            title: 'JavaScript Tutorial 3',
+            content: 'Learn JavaScript Pro',
+            published: true,
+            authorId: user!.id,
+          },
+          {
+            title: 'JavaScript Tutorial 4',
+            content: 'Learn JavaScript Expert',
+            published: true,
+            authorId: user!.id,
+          },
+          {
+            title: 'Python Guide',
+            content: 'Learn Python',
+            published: true,
+            authorId: user!.id,
+          },
+        ],
+      });
+
+      // Search for 'JavaScript', get 2 posts, skipping the first 2 (i.e., get posts 3 and 4)
+      const response = await request(server)
+        .get('/v1/posts/search/JavaScript?limit=2&offset=2')
+        .expect(200);
+
+      const body = response.body as DataWithMetaResponseDto<PostDto[], CountMetaDto>;
+      expect(body.data).toHaveLength(2);
+      expect(body.data[0]?.title).toContain('JavaScript Tutorial 3');
+      expect(body.data[1]?.title).toContain('JavaScript Tutorial 4');
+      expect(body.meta).toEqual({ count: 4 });
     });
   });
 });

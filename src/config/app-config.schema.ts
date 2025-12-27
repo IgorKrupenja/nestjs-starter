@@ -10,6 +10,7 @@ const schema = {
     .default('error,warn,log'),
   LOGGER_COLORS: Joi.boolean().default(false),
   API_DOCUMENTATION_ENABLED: Joi.boolean().default(false),
+  API_CORS_ORIGIN: Joi.string().allow('').default(''),
   NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development'),
 };
 

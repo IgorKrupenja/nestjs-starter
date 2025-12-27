@@ -13,6 +13,7 @@ export const appConfigFactory = registerAs('app', (): AppConfig => {
     loggerLogLevels: parseLogLevels(<string>env['LOGGER_LOG_LEVELS']),
     loggerColors: <boolean>env['LOGGER_COLORS'],
     apiDocumentationEnabled: <boolean>env['API_DOCUMENTATION_ENABLED'],
+    corsOrigin: parseCorsOrigin(<string>env['API_CORS_ORIGIN']),
     nodeEnv: <string>env['NODE_ENV'],
   };
 });
@@ -20,4 +21,12 @@ export const appConfigFactory = registerAs('app', (): AppConfig => {
 function parseLogLevels(value: string): LogLevel[] {
   const levels = value.split(',').map((level) => level.trim()) as LogLevel[];
   return levels;
+}
+
+function parseCorsOrigin(value: string): string | string[] {
+  if (!value || value === '') {
+    return ''; // Empty string disables CORS
+  }
+  const origins = value.split(',').map((origin) => origin.trim());
+  return origins.length === 1 ? origins[0] : origins;
 }

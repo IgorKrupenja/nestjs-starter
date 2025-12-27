@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { DataWithMetaResponseDto } from '@src/common/dtos/data-with-meta-response.dto.js';
 import { Post, Prisma } from '@src/generated/prisma/client.js';
+import { CreatePostDto } from '@src/post/dtos/create-post-draft.dto.js';
 import { PrismaService } from '@src/prisma/services/prisma.service.js';
-
-import { CreatePostDto } from '../dtos/create-post-draft.dto.js';
 
 @Injectable()
 export class PostService {
@@ -14,13 +14,21 @@ export class PostService {
     });
   }
 
-  getPublishedPosts(): Promise<Post[]> {
+  getPublishedPosts(params?: {
+    limit?: number;
+    offset?: number;
+  }): Promise<DataWithMetaResponseDto<Post[]>> {
     return this.getPosts({
       where: { published: true },
+      take: params?.limit,
+      skip: params?.offset,
     });
   }
 
-  getFilteredPosts(searchString: string): Promise<Post[]> {
+  getFilteredPosts(
+    searchString: string,
+    params?: { limit?: number; offset?: number },
+  ): Promise<DataWithMetaResponseDto<Post[]>> {
     return this.getPosts({
       where: {
         OR: [
@@ -32,24 +40,19 @@ export class PostService {
           },
         ],
       },
+      take: params?.limit,
+      skip: params?.offset,
     });
   }
 
-  getPosts(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.PostWhereUniqueInput;
-    where?: Prisma.PostWhereInput;
-    orderBy?: Prisma.PostOrderByWithRelationInput;
-  }): Promise<Post[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.post.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    });
+  async getPosts(params: Prisma.PostFindManyArgs): Promise<DataWithMetaResponseDto<Post[]>> {
+    const { where } = params;
+    const [data, count] = await this.prisma.$transaction([
+      this.prisma.post.findMany(params),
+      this.prisma.post.count({ where }),
+    ]);
+
+    return { data, meta: { count } };
   }
 
   createDraft(post: CreatePostDto): Promise<Post> {

@@ -5,9 +5,9 @@ import { configureApp } from './app.config.js';
 import { AppModule } from './app.module.js';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // Apply shared app configuration (logger, compression, versioning, pipes, filters, swagger)
+  // Apply shared app configuration
   configureApp(app);
 
   await app.listen(3000);

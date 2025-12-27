@@ -42,6 +42,7 @@ The application automatically loads the appropriate config file based on the `NO
 | `LOGGER_LOG_LEVELS` | Comma-separated log levels (log, error, warn, debug, verbose, fatal) |  | `error,warn,log` | `error,warn,log` |
 | `LOGGER_COLORS` | Enable colored console output |  | `false` | `false` |
 | `API_DOCUMENTATION_ENABLED` | Enable Swagger API documentation |  | `false` | `false` |
+| `API_CORS_ORIGIN` | CORS allowed origins (can be comma-separated list) |  | (empty string) | Configure based on your frontend domain(s) |
 
 ## Run the project
 
@@ -93,7 +94,8 @@ pnpm run format
 
 ## Swagger Documentation
 
-**Note:** It's recommended to keep API documentation disabled in production environments for security reasons.
+Automatically generated API documentation can be found
+at [http://localhost:3000/documentation](http://localhost:3000/documentation)
 
 ## Testing Docker image
 
