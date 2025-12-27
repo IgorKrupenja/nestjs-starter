@@ -17,7 +17,6 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { ApiOkDataResponse } from '@src/common/decorators/api-data-response.decorator.js';
@@ -57,8 +56,6 @@ export class PostController {
     meta: { type: CountMetaDto },
   })
   @ApiOperation({ summary: 'Get all published posts' })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiQuery({ name: 'offset', required: false, type: Number })
   async getPublishedPosts(
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
     @Query('offset', new ParseIntPipe({ optional: true })) offset?: number,
@@ -73,8 +70,6 @@ export class PostController {
     meta: { type: CountMetaDto },
   })
   @ApiOperation({ summary: 'Search posts by title or content' })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiQuery({ name: 'offset', required: false, type: Number })
   async getFilteredPosts(
     @Param('searchString') searchString: string,
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
