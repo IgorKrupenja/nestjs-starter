@@ -15,7 +15,7 @@ Run the following commands **or just the `./setup.sh` that will do this automati
 nvm install
 # Install the correct pnpm version
 corepack enable pnpm
-corepack up
+corepack install
 # Install dependencies
 pnpm install
 # Start DB

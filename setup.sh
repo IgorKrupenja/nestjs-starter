@@ -20,7 +20,7 @@ nvm use
 
 echo "Setting up pnpm..."
 corepack enable pnpm
-corepack up
+corepack install
 
 echo "Installing dependencies..."
 pnpm install
