@@ -5,13 +5,13 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import unusedImports from 'eslint-plugin-unused-imports';
 import * as importPlugin from 'eslint-plugin-import';
-import vitest from "@vitest/eslint-plugin";
+import vitest from '@vitest/eslint-plugin';
 
 export default [
   {
-    files: ["**/*.spec.ts"],
+    files: ['**/*.spec.ts'],
     plugins: {
-      vitest
+      vitest,
     },
     rules: {
       ...vitest.configs.recommended.rules,
@@ -40,8 +40,8 @@ export default [
   {
     plugins: {
       'unused-imports': unusedImports,
-      'import': importPlugin,
-      'prettier': prettier,
+      import: importPlugin,
+      prettier: prettier,
     },
     rules: {
       '@typescript-eslint/explicit-function-return-type': 'error',
@@ -109,9 +109,9 @@ export default [
       'import/order': [
         'error',
         {
-          'groups': ['builtin', 'external', ['parent', 'sibling'], 'index'],
+          groups: ['builtin', 'external', ['parent', 'sibling'], 'index'],
           'newlines-between': 'always',
-          'alphabetize': { order: 'asc', caseInsensitive: true },
+          alphabetize: { order: 'asc', caseInsensitive: true },
         },
       ],
       'sort-imports': [

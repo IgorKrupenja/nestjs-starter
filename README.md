@@ -36,13 +36,13 @@ Environment-specific configuration files are located in the `config/` folder:
 
 The application automatically loads the appropriate config file based on the `NODE_ENV` environment variable.
 
-| Variable | Description | Required | Default Value | Recommended Production Value |
-|----------|-------------|----------|---------------|------------------------------|
-| `DATABASE_URL` | PostgreSQL connection string | ✅ Yes | | |
-| `LOGGER_LOG_LEVELS` | Comma-separated log levels (log, error, warn, debug, verbose, fatal) |  | `error,warn,log` | `error,warn,log` |
-| `LOGGER_COLORS` | Enable colored console output |  | `false` | `false` |
-| `API_DOCUMENTATION_ENABLED` | Enable Swagger API documentation |  | `false` | `false` |
-| `API_CORS_ORIGIN` | CORS allowed origins (can be comma-separated list) |  | (empty string) | Configure based on your frontend domain(s) |
+| Variable                    | Description                                                          | Required | Default Value    | Recommended Production Value               |
+| --------------------------- | -------------------------------------------------------------------- | -------- | ---------------- | ------------------------------------------ |
+| `DATABASE_URL`              | PostgreSQL connection string                                         | ✅ Yes   |                  |                                            |
+| `LOGGER_LOG_LEVELS`         | Comma-separated log levels (log, error, warn, debug, verbose, fatal) |          | `error,warn,log` | `error,warn,log`                           |
+| `LOGGER_COLORS`             | Enable colored console output                                        |          | `false`          | `false`                                    |
+| `API_DOCUMENTATION_ENABLED` | Enable Swagger API documentation                                     |          | `false`          | `false`                                    |
+| `API_CORS_ORIGIN`           | CORS allowed origins (can be comma-separated list)                   |          | (empty string)   | Configure based on your frontend domain(s) |
 
 ## Run the project
 
