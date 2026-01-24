@@ -59,6 +59,11 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     }
   }
 
+  // Executes the callback inside a SERIALIZABLE transaction that first tries
+  // to acquire a PostgreSQL advisory transaction lock; returns undefined when
+  // the lock can't be acquired within the timeout.
+  // Can be used to prevent concurrent execution of code that modifies the same data.
+  // E.g. with Cron jobs in multi-instance set ups.
   async runWithLock<T>(
     lockKey: bigint,
     timeoutInSeconds: number,
