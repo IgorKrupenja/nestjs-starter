@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { appConfigFactory } from '@src/config/app-config.factory.js';
 import { AppConfig } from '@src/config/interfaces/app-config.interface.js';
 import { PrismaExceptionFilter } from '@src/prisma/filters/prisma-exception.filter.js';
@@ -18,7 +18,7 @@ import compression from 'compression';
  * This function is used by both the main application and tests
  * to ensure consistent configuration
  */
-export function configureApp(app: INestApplication): void {
+export function configureApp(app: INestApplication): OpenAPIObject | undefined {
   const config = app.get<AppConfig>(appConfigFactory.KEY);
   const configService = app.get(ConfigService);
 
@@ -79,5 +79,8 @@ export function configureApp(app: INestApplication): void {
         tagsSorter: 'alpha',
       },
     });
+    return document;
   }
+
+  return undefined;
 }
