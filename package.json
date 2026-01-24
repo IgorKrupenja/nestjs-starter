@@ -19,13 +19,15 @@
     "test:run": "vitest run",
     "test:e2e:setup": "tsx scripts/setup-and-start-test-db.ts",
     "test:e2e": "NODE_ENV=test vitest --config vitest.config.e2e.mts",
-    "test:e2e:run": "NODE_ENV=test vitest run --config vitest.config.e2e.mts"
+    "test:e2e:run": "NODE_ENV=test vitest run --config vitest.config.e2e.mts",
+    "prisma:generate": "prisma generate"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.11",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.11",
     "@nestjs/platform-express": "^11.1.11",
+    "@nestjs/terminus": "^11.0.0",
     "@nestjs/swagger": "^11.2.4",
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
@@ -34,6 +36,7 @@
     "compression": "^1.8.1",
     "dotenv": "^17.2.3",
     "joi": "^18.0.2",
+    "openapi-typescript": "^7.10.1",
     "pg": "^8.16.3",
     "rxjs": "^7.8.2"
   },

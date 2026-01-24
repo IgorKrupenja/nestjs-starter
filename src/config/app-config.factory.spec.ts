@@ -1,7 +1,7 @@
+import { ConfigUtil } from '@src/config/utils/config.util.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { appConfigFactory } from './app-config.factory.js';
-import { ConfigUtil } from './utils/config.util.js';
 
 describe('appConfigFactory', () => {
   const originalEnv = process.env;

@@ -3,6 +3,11 @@ import { ConfigService } from '@nestjs/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { AppConfig } from '@src/config/interfaces/app-config.interface.js';
 import { PrismaClient } from '@src/generated/prisma/client.js';
+import { PrismaTransactionClient } from '@src/prisma/interfaces/prisma-transaction-client.interface.js';
+
+interface AdvisoryLockResult {
+  pg_try_advisory_xact_lock: boolean;
+}
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
@@ -52,5 +57,27 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         this.logger.log(`Duration: ${e.duration}ms`);
       });
     }
+  }
+
+  // Executes the callback inside a SERIALIZABLE transaction that first tries
+  // to acquire a PostgreSQL advisory transaction lock; returns undefined when
+  // the lock can't be acquired within the timeout.
+  // Can be used to prevent concurrent execution of code that modifies the same data.
+  // E.g. with Cron jobs in multi-instance set ups.
+  async runWithLock<T>(
+    lockKey: bigint,
+    timeoutInSeconds: number,
+    callback: (tx: PrismaTransactionClient) => Promise<T>,
+  ): Promise<T | undefined> {
+    return this.$transaction(
+      async (tx) => {
+        const [result] = await tx.$queryRaw<
+          AdvisoryLockResult[]
+        >`select pg_try_advisory_xact_lock(${lockKey})`;
+        if (result?.pg_try_advisory_xact_lock) return callback(tx);
+        return undefined;
+      },
+      { timeout: timeoutInSeconds * 1000, isolationLevel: 'Serializable' },
+    );
   }
 }
