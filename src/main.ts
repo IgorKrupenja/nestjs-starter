@@ -13,6 +13,7 @@ async function bootstrap(): Promise<void> {
   // Apply shared app configuration
   const openApiDocument = configureApp(app);
 
+  // todo likely extract into a script
   // Generate TypeScript client types from OpenAPI spec in development
   if (process.env.NODE_ENV === 'development' && openApiDocument) {
     fs.mkdirSync('./client', { recursive: true });
