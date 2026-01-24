@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { AppConfig } from '@src/config/interfaces/app-config.interface.js';
@@ -13,7 +13,7 @@ interface AdvisoryLockResult {
 export class PrismaService extends PrismaClient implements OnModuleInit {
   private readonly logger = new Logger(PrismaService.name);
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(@Inject(ConfigService) private readonly configService: ConfigService) {
     const appConfig = configService.get<AppConfig>('app')!;
 
     const adapter = new PrismaPg({

@@ -123,23 +123,6 @@ export interface components {
              */
             count: number;
         };
-        CreatePostDto: {
-            /**
-             * @description The title of the post.
-             * @example On programming languages
-             */
-            title: string;
-            /**
-             * @description The content of the post.
-             * @example TypeScript is the best programming language.
-             */
-            content: string;
-            /**
-             * @description The email of the author of the post.
-             * @example test@example.com
-             */
-            authorEmail: string;
-        };
     };
     responses: never;
     parameters: never;
@@ -271,9 +254,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                id: number;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -294,9 +275,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                id: number;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -319,10 +298,7 @@ export interface operations {
     };
     PostController_getPublishedPosts_v1: {
         parameters: {
-            query: {
-                limit: number;
-                offset: number;
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -349,11 +325,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreatePostDto"];
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Post created successfully */
             200: {
@@ -373,14 +345,9 @@ export interface operations {
     };
     PostController_getFilteredPosts_v1: {
         parameters: {
-            query: {
-                limit: number;
-                offset: number;
-            };
+            query?: never;
             header?: never;
-            path: {
-                searchString: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -402,9 +369,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                id: number;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
