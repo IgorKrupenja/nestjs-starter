@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataWithMetaResponseDto } from '@src/common/dtos/data-with-meta-response.dto.js';
 import { Post, Prisma } from '@src/generated/prisma/client.js';
-import { CreatePostDto } from '@src/post/dtos/create-post-draft.dto.js';
+import { CreatePostDraftDto } from '@src/post/dtos/create-post-draft.dto.js';
 import { PrismaService } from '@src/prisma/services/prisma.service.js';
 
 @Injectable()
@@ -55,7 +55,7 @@ export class PostService {
     return { data, meta: { count } };
   }
 
-  createDraft(post: CreatePostDto): Promise<Post> {
+  createDraft(post: CreatePostDraftDto): Promise<Post> {
     const { title, content, authorEmail } = post;
 
     return this.prisma.post.create({

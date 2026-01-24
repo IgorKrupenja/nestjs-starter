@@ -1,5 +1,8 @@
+-- CreateSchema
+CREATE SCHEMA IF NOT EXISTS "starter";
+
 -- CreateTable
-CREATE TABLE "user" (
+CREATE TABLE "starter"."user" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -8,7 +11,7 @@ CREATE TABLE "user" (
 );
 
 -- CreateTable
-CREATE TABLE "post" (
+CREATE TABLE "starter"."post" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "content" TEXT NOT NULL,
@@ -19,7 +22,7 @@ CREATE TABLE "post" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
+CREATE UNIQUE INDEX "user_email_key" ON "starter"."user"("email");
 
 -- AddForeignKey
-ALTER TABLE "post" ADD CONSTRAINT "post_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "starter"."post" ADD CONSTRAINT "post_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "starter"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

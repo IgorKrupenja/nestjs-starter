@@ -123,7 +123,7 @@ export interface components {
              */
             count: number;
         };
-        CreatePostDto: {
+        CreatePostDraftDto: {
             /**
              * @description The title of the post.
              * @example On programming languages
@@ -351,7 +351,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreatePostDto"];
+                "application/json": components["schemas"]["CreatePostDraftDto"];
             };
         };
         responses: {

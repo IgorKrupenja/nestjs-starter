@@ -18,7 +18,7 @@ export default [
     },
   },
   {
-    ignores: ['eslint.config.mjs', 'src/generated/**/*'],
+    ignores: ['eslint.config.mjs', 'src/generated/**/*', 'client/**/*'],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,

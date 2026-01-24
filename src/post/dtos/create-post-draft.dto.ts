@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Prisma } from '@src/generated/prisma/client.js';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
-export class CreatePostDto implements Pick<Prisma.PostCreateInput, 'title' | 'content'> {
+export class CreatePostDraftDto implements Pick<Prisma.PostCreateInput, 'title' | 'content'> {
   @ApiProperty({
     description: 'The title of the post.',
     example: 'On programming languages',

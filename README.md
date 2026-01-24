@@ -19,7 +19,7 @@ corepack install
 # Install dependencies
 pnpm install
 # Start DB
-docker compose up db -d
+docker compose up db -d --wait
 # Prepare Prisma
 pnpm exec prisma migrate dev
 pnpm exec prisma generate
@@ -68,7 +68,7 @@ pnpm run test:cov
 ### E2E tests
 
 ```bash
-# Set up test database (first time only - starts container + runs migrations)
+# Set up test database (starts container + runs migrations)
 pnpm run test:e2e:setup
 
 # E2E tests in watch mode
@@ -96,6 +96,10 @@ pnpm run format
 
 Automatically generated API documentation can be found
 at [http://localhost:3000/documentation](http://localhost:3000/documentation)
+
+## Client Types
+
+Run `pnpm generate-client-types` to regenerate `client/index.d.ts` from the OpenAPI spec.
 
 ## Testing Docker image
 

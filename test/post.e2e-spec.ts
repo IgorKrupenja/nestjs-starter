@@ -5,7 +5,7 @@ import { CountMetaDto } from '@src/common/dtos/count-meta.dto.js';
 import { DataResponseDto } from '@src/common/dtos/data-response.dto.js';
 import { DataWithMetaResponseDto } from '@src/common/dtos/data-with-meta-response.dto.js';
 import { PostModel } from '@src/generated/prisma/models.js';
-import { CreatePostDto } from '@src/post/dtos/create-post-draft.dto.js';
+import { CreatePostDraftDto } from '@src/post/dtos/create-post-draft.dto.js';
 import { PostDto } from '@src/post/dtos/post.dto.js';
 import { PrismaService } from '@src/prisma/services/prisma.service.js';
 import request from 'supertest';
@@ -50,7 +50,7 @@ describe('Post API (E2E)', () => {
 
   describe('POST /v1/posts', () => {
     it('should create a new draft post', async () => {
-      const createPostDto: CreatePostDto = {
+      const createPostDto: CreatePostDraftDto = {
         title: 'Test Post',
         content: 'This is a test post content',
         authorEmail: 'test@example.com',
@@ -77,7 +77,7 @@ describe('Post API (E2E)', () => {
     });
 
     it('should return 400 when email is invalid', async () => {
-      const invalidDto: CreatePostDto = {
+      const invalidDto: CreatePostDraftDto = {
         title: 'Test Post',
         content: 'Content',
         authorEmail: 'invalid-email',
