@@ -1,5 +1,12 @@
-import { ConsoleLogger, INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  ConsoleLogger,
+  INestApplication,
+  ValidationPipe,
+  VersioningType,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from 'compression';
 
@@ -43,6 +50,13 @@ export function configureApp(app: INestApplication): void {
     new ValidationPipe({
       whitelist: true,
       transform: true,
+    }),
+  );
+
+  // Serialize responses through DTOs and strip out unexposed properties
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector), {
+      excludeExtraneousValues: true,
     }),
   );
 

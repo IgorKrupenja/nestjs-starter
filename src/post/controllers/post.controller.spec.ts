@@ -1,10 +1,12 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostModel } from '@src/generated/prisma/models.js';
+import { plainToInstance } from 'class-transformer';
 import { describe } from 'vitest';
 
 import { PostController } from './post.controller.js';
-import { PostService } from '../services/post.service.js';
+import { PostDto } from '@src/post/dtos/post.dto.js';
+import { PostService } from '@src/post/services/post.service.js';
 
 describe('PostController', () => {
   let postController: PostController;
@@ -44,7 +46,7 @@ describe('PostController', () => {
       vi.spyOn(postService, 'getPost').mockResolvedValueOnce(mockPost);
 
       const result = await postController.getPost(1);
-      expect(result).toEqual({ data: mockPost });
+      expect(result).toEqual({ data: plainToInstance(PostDto, mockPost) });
       expect(postService.getPost).toHaveBeenCalledWith(1);
     });
 
@@ -67,7 +69,10 @@ describe('PostController', () => {
       vi.spyOn(postService, 'getPublishedPosts').mockResolvedValueOnce(mockResponse);
 
       const result = await postController.getPublishedPosts();
-      expect(result).toEqual(mockResponse);
+      expect(result).toEqual({
+        data: plainToInstance(PostDto, mockPosts),
+        meta: mockResponse.meta,
+      });
       expect(postService.getPublishedPosts).toHaveBeenCalledWith({
         limit: undefined,
         offset: undefined,
@@ -82,7 +87,10 @@ describe('PostController', () => {
       vi.spyOn(postService, 'getPublishedPosts').mockResolvedValueOnce(mockResponse);
 
       const result = await postController.getPublishedPosts(10, 5);
-      expect(result).toEqual(mockResponse);
+      expect(result).toEqual({
+        data: plainToInstance(PostDto, mockPosts),
+        meta: mockResponse.meta,
+      });
       expect(postService.getPublishedPosts).toHaveBeenCalledWith({
         limit: 10,
         offset: 5,
@@ -99,7 +107,10 @@ describe('PostController', () => {
       vi.spyOn(postService, 'getFilteredPosts').mockResolvedValueOnce(mockResponse);
 
       const result = await postController.getFilteredPosts('Test');
-      expect(result).toEqual(mockResponse);
+      expect(result).toEqual({
+        data: plainToInstance(PostDto, mockPosts),
+        meta: mockResponse.meta,
+      });
       expect(postService.getFilteredPosts).toHaveBeenCalledWith('Test', {
         limit: undefined,
         offset: undefined,
@@ -114,7 +125,10 @@ describe('PostController', () => {
       vi.spyOn(postService, 'getFilteredPosts').mockResolvedValueOnce(mockResponse);
 
       const result = await postController.getFilteredPosts('Test', 10, 5);
-      expect(result).toEqual(mockResponse);
+      expect(result).toEqual({
+        data: plainToInstance(PostDto, mockPosts),
+        meta: mockResponse.meta,
+      });
       expect(postService.getFilteredPosts).toHaveBeenCalledWith('Test', {
         limit: 10,
         offset: 5,
@@ -141,7 +155,7 @@ describe('PostController', () => {
       vi.spyOn(postService, 'createDraft').mockResolvedValueOnce(mockPost);
 
       const result = await postController.createDraft(postDto);
-      expect(result).toEqual(mockPost);
+      expect(result).toEqual(plainToInstance(PostDto, mockPost));
       expect(postService.createDraft).toHaveBeenCalledWith(postDto);
     });
   });
@@ -158,7 +172,7 @@ describe('PostController', () => {
       vi.spyOn(postService, 'publishPost').mockResolvedValueOnce(mockPost);
 
       const result = await postController.publishPost(1);
-      expect(result).toEqual(mockPost);
+      expect(result).toEqual(plainToInstance(PostDto, mockPost));
       expect(postService.publishPost).toHaveBeenCalledWith(1);
     });
   });
@@ -175,7 +189,7 @@ describe('PostController', () => {
       vi.spyOn(postService, 'deletePost').mockResolvedValueOnce(mockPost);
 
       const result = await postController.deletePost(1);
-      expect(result).toEqual(mockPost);
+      expect(result).toEqual(plainToInstance(PostDto, mockPost));
       expect(postService.deletePost).toHaveBeenCalledWith(1);
     });
   });

@@ -121,6 +121,17 @@ export default [
           ignoreDeclarationSort: true,
         },
       ],
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['./*/', '**../'],
+              message: 'Relative imports are not allowed except for files in the same directory',
+            },
+          ],
+        },
+      ],
       'prettier/prettier': 'error',
     },
   },
