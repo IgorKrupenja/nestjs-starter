@@ -19,7 +19,7 @@ corepack install
 # Install dependencies
 pnpm install
 # Start DB
-docker compose up db -d
+docker compose up db -d --wait
 # Prepare Prisma
 pnpm exec prisma migrate dev
 pnpm exec prisma generate
