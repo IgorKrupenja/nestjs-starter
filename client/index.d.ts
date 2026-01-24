@@ -271,7 +271,9 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                id: number;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -292,7 +294,9 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                id: number;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -315,7 +319,10 @@ export interface operations {
     };
     PostController_getPublishedPosts_v1: {
         parameters: {
-            query?: never;
+            query: {
+                limit: number;
+                offset: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -366,9 +373,14 @@ export interface operations {
     };
     PostController_getFilteredPosts_v1: {
         parameters: {
-            query?: never;
+            query: {
+                limit: number;
+                offset: number;
+            };
             header?: never;
-            path?: never;
+            path: {
+                searchString: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -390,7 +402,9 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                id: number;
+            };
             cookie?: never;
         };
         requestBody?: never;

@@ -14,7 +14,6 @@ import {
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
-  ApiBody,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -90,7 +89,7 @@ export class PostController {
   @Post('/')
   @ApiOkResponse({ description: 'Post created successfully' })
   @ApiBadRequestResponse({ description: 'Invalid input data' })
-  @ApiBody({ type: CreatePostDraftDto })
+  // @ApiBody({ type: CreatePostDraftDto })
   @ApiOperation({ summary: 'Create a new draft post' })
   async createDraft(@Body() post: CreatePostDraftDto): Promise<PostDto> {
     const createdPost = await this.postService.createDraft(post);
