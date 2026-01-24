@@ -1,12 +1,12 @@
 import { validate } from 'class-validator';
 
-import { CreatePostDto } from './create-post-draft.dto.js';
+import { CreatePostDraftDto } from './create-post-draft.dto.js';
 
 describe('CreatePostDto', () => {
-  let dto: CreatePostDto;
+  let dto: CreatePostDraftDto;
 
   beforeEach(() => {
-    dto = new CreatePostDto();
+    dto = new CreatePostDraftDto();
   });
 
   it('should be defined', () => {

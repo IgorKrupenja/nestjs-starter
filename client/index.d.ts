@@ -123,6 +123,23 @@ export interface components {
              */
             count: number;
         };
+        CreatePostDraftDto: {
+            /**
+             * @description The title of the post.
+             * @example On programming languages
+             */
+            title: string;
+            /**
+             * @description The content of the post.
+             * @example TypeScript is the best programming language.
+             */
+            content: string;
+            /**
+             * @description The email of the author of the post.
+             * @example test@example.com
+             */
+            authorEmail: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -325,7 +342,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePostDraftDto"];
+            };
+        };
         responses: {
             /** @description Post created successfully */
             200: {

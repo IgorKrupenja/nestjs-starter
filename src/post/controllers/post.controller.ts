@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBody,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -25,7 +26,7 @@ import { CountMetaDto } from '@src/common/dtos/count-meta.dto.js';
 import { DataResponseDto } from '@src/common/dtos/data-response.dto.js';
 import { DataWithMetaResponseDto } from '@src/common/dtos/data-with-meta-response.dto.js';
 import { RequestLogger } from '@src/common/interceptors/request-logger.interceptor.js';
-import { CreatePostDto } from '@src/post/dtos/create-post-draft.dto.js';
+import { CreatePostDraftDto } from '@src/post/dtos/create-post-draft.dto.js';
 import { PostDto } from '@src/post/dtos/post.dto.js';
 import { PostService } from '@src/post/services/post.service.js';
 import { plainToInstance } from 'class-transformer';
@@ -89,8 +90,9 @@ export class PostController {
   @Post('/')
   @ApiOkResponse({ description: 'Post created successfully' })
   @ApiBadRequestResponse({ description: 'Invalid input data' })
+  @ApiBody({ type: CreatePostDraftDto })
   @ApiOperation({ summary: 'Create a new draft post' })
-  async createDraft(@Body() post: CreatePostDto): Promise<PostDto> {
+  async createDraft(@Body() post: CreatePostDraftDto): Promise<PostDto> {
     const createdPost = await this.postService.createDraft(post);
     return plainToInstance(PostDto, createdPost);
   }
