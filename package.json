@@ -7,7 +7,7 @@
   "scripts": {
     "build": "nest build",
     "dev": "NODE_ENV=development nest start  --watch",
-    "generate-client-types": "tsx scripts/generate-client-types.ts && prettier \"client/index.d.ts\" --write",
+    "generate-client-types": "tsx scripts/generate-client-types.ts",
     "format": "prettier \"**/*.{ts,json,yml}\" --write",
     "format:check": "prettier \"**/*.{ts,json,yml}\" --check",
     "lint": "eslint \"{src,test,scripts}/**/*.ts\" --fix --max-warnings 0",
