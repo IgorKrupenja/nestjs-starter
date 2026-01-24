@@ -6,7 +6,6 @@ export class PostDto implements PostModel {
   @ApiProperty({
     description: 'The unique identifier of the post.',
     example: 1,
-    type: Number,
   })
   @Expose()
   id!: number;
@@ -14,7 +13,6 @@ export class PostDto implements PostModel {
   @ApiProperty({
     description: 'The title of the post.',
     example: 'On programming languages',
-    type: String,
   })
   @Expose()
   title!: string;
@@ -22,7 +20,6 @@ export class PostDto implements PostModel {
   @ApiProperty({
     description: 'The content of the post.',
     example: 'TypeScript is the best programming language.',
-    type: String,
   })
   @Expose()
   content!: string;
@@ -30,7 +27,6 @@ export class PostDto implements PostModel {
   @ApiProperty({
     description: 'Whether the post is published or not.',
     example: true,
-    type: Boolean,
   })
   @Expose()
   published!: boolean;
@@ -38,7 +34,6 @@ export class PostDto implements PostModel {
   @ApiProperty({
     description: 'The unique identifier of the author of the post.',
     example: 1,
-    type: Number,
   })
   @Expose()
   authorId!: number;

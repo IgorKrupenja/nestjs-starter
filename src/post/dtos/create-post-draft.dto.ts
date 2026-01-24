@@ -6,7 +6,6 @@ export class CreatePostDraftDto implements Pick<Prisma.PostCreateInput, 'title' 
   @ApiProperty({
     description: 'The title of the post.',
     example: 'On programming languages',
-    type: String,
   })
   @IsString()
   @IsNotEmpty()
@@ -15,7 +14,6 @@ export class CreatePostDraftDto implements Pick<Prisma.PostCreateInput, 'title' 
   @ApiProperty({
     description: 'The content of the post.',
     example: 'TypeScript is the best programming language.',
-    type: String,
   })
   @IsString()
   @IsNotEmpty()
@@ -24,7 +22,6 @@ export class CreatePostDraftDto implements Pick<Prisma.PostCreateInput, 'title' 
   @ApiProperty({
     description: 'The email of the author of the post.',
     example: 'test@example.com',
-    type: String,
   })
   @IsEmail()
   @IsNotEmpty()
