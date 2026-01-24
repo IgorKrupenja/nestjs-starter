@@ -14,7 +14,7 @@ else
     echo "NVM installed."
 fi
 
-echo "Installing Node 22.14..."
+echo "Installing Node..."
 nvm install
 nvm use
 

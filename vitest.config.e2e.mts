@@ -12,6 +12,7 @@ export default defineConfig({
     root: './',
     // E2E tests should run sequentially to avoid database conflicts
     maxConcurrency: 1,
+    fileParallelism: false,
     // Longer timeout for E2E tests
     testTimeout: 30000,
     hookTimeout: 30000,
