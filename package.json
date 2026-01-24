@@ -20,7 +20,7 @@
     "test:e2e:setup": "tsx scripts/setup-and-start-test-db.ts",
     "test:e2e": "NODE_ENV=test vitest --config vitest.config.e2e.mts",
     "test:e2e:run": "NODE_ENV=test vitest run --config vitest.config.e2e.mts",
-    "prisma:generate": "prisma generate && tsx scripts/fix-prisma-esm-imports.ts"
+    "prisma:generate": "prisma generate"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.11",
