@@ -15,6 +15,10 @@ updates:
       nestjs:
         patterns:
           - '@nestjs/*'
+      prisma:
+        patterns:
+          - 'prisma'
+          - '@prisma/*'
       vitest:
         patterns:
           - 'vitest'
