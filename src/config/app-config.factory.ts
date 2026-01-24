@@ -1,9 +1,9 @@
 import { LogLevel } from '@nestjs/common';
 import { registerAs } from '@nestjs/config';
+import { AppConfig } from '@src/config/interfaces/app-config.interface.js';
+import { ConfigUtil } from '@src/config/utils/config.util.js';
 
 import { appConfigSchema } from './app-config.schema.js';
-import { AppConfig } from './interfaces/app-config.interface.js';
-import { ConfigUtil } from './utils/config.util.js';
 
 export const appConfigFactory = registerAs('app', (): AppConfig => {
   const env = ConfigUtil.validate(appConfigSchema);

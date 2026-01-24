@@ -1,18 +1,17 @@
 import type { Server } from 'node:http';
 
 import { INestApplication } from '@nestjs/common';
+import { CountMetaDto } from '@src/common/dtos/count-meta.dto.js';
+import { DataResponseDto } from '@src/common/dtos/data-response.dto.js';
+import { DataWithMetaResponseDto } from '@src/common/dtos/data-with-meta-response.dto.js';
 import { PostModel } from '@src/generated/prisma/models.js';
 import { CreatePostDto } from '@src/post/dtos/create-post-draft.dto.js';
+import { PostDto } from '@src/post/dtos/post.dto.js';
 import { PrismaService } from '@src/prisma/services/prisma.service.js';
 import request from 'supertest';
+import { createTestApp } from 'test/utils/create-test-app.util.js';
+import { DatabaseUtil } from 'test/utils/database.util.js';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
-
-import { createTestApp } from './utils/create-test-app.util.js';
-import { DatabaseUtil } from './utils/database.util.js';
-import { CountMetaDto } from '../src/common/dtos/count-meta.dto.js';
-import { DataResponseDto } from '../src/common/dtos/data-response.dto.js';
-import { DataWithMetaResponseDto } from '../src/common/dtos/data-with-meta-response.dto.js';
-import { PostDto } from '../src/post/dtos/post.dto.js';
 
 describe('Post API (E2E)', () => {
   let app: INestApplication;

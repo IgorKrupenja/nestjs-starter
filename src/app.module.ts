@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-
-import { appConfigFactory } from './config/app-config.factory.js';
-import { PostModule } from './post/post.module.js';
-import { PrismaModule } from './prisma/prisma.module.js';
+import { appConfigFactory } from '@src/config/app-config.factory.js';
+import { HealthModule } from '@src/health/health.module.js';
+import { PostModule } from '@src/post/post.module.js';
+import { PrismaModule } from '@src/prisma/prisma.module.js';
 
 @Module({
   imports: [
@@ -14,6 +14,7 @@ import { PrismaModule } from './prisma/prisma.module.js';
     }),
     ConfigModule.forFeature(appConfigFactory),
     PrismaModule,
+    HealthModule,
     PostModule,
   ],
 })

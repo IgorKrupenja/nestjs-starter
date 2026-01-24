@@ -8,11 +8,10 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { appConfigFactory } from '@src/config/app-config.factory.js';
+import { AppConfig } from '@src/config/interfaces/app-config.interface.js';
+import { PrismaExceptionFilter } from '@src/prisma/filters/prisma-exception.filter.js';
 import compression from 'compression';
-
-import { appConfigFactory } from './config/app-config.factory.js';
-import { AppConfig } from './config/interfaces/app-config.interface.js';
-import { PrismaExceptionFilter } from './prisma/filters/prisma-exception.filter.js';
 
 /**
  * Configures the NestJS application with common settings
