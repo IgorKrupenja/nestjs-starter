@@ -97,6 +97,10 @@ pnpm run format
 Automatically generated API documentation can be found
 at [http://localhost:3000/documentation](http://localhost:3000/documentation)
 
+## Client Types
+
+Run `pnpm generate-client-types` to regenerate `client/index.d.ts` from the OpenAPI spec.
+
 ## Testing Docker image
 
 **You should NEVER use this to run locally**. This is only for testing the Docker image.
