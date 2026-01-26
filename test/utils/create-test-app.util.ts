@@ -22,6 +22,7 @@ export async function createTestApp(): Promise<{
   const app = moduleFixture.createNestApplication();
   const prisma = app.get<PrismaService>(PrismaService);
 
+  // Log a meaningful error message if database is not running/ready
   try {
     await prisma.$connect();
     // Check if database is ready by running a simple query
