@@ -12,6 +12,8 @@ updates:
       - 'dependencies'
     pull-request-branch-name:
       separator: '/'
+    ignore:
+      - dependency-name: '@types/node'
     groups:
       nestjs:
         patterns:
