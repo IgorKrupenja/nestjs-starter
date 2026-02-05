@@ -7,20 +7,12 @@ on:
         type: string
 
 jobs:
-  check:
+  run-check:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: ./.github/actions/pnpm-install
         with:
-          node-version-file: package.json
-          cache: pnpm
-      - run: pnpm install
-      # Use env var to prevent script injection
-      - name: Run command
-        env:
-          COMMAND: ${{ inputs.command }}
-        run: $COMMAND
+          command: ${{ inputs.command }}

@@ -1,0 +1,27 @@
+name: Setup pnpm and install dependencies
+description: Setup pnpm, Node.js, and install dependencies with optional extra command
+inputs:
+  command:
+    description: Optional extra command to run after install
+    required: false
+runs:
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@v4
+      with:
+        package_json_file: package.json
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: package.json
+        cache: pnpm
+        cache-dependency-path: pnpm-lock.yaml
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+      shell: bash
+    - name: Run extra command
+      if: ${{ inputs.command != '' }}
+      # Use env var to prevent script injection
+      env:
+        COMMAND: ${{ inputs.command }}
+      run: $COMMAND
+      shell: bash

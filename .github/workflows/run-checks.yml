@@ -40,14 +40,9 @@ jobs:
           --health-retries 5
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: ./.github/actions/pnpm-install
         with:
-          node-version-file: package.json
-          cache: pnpm
-      - run: pnpm install
-      - name: Generate Prisma Client
-        run: pnpm exec prisma generate
+          command: pnpm exec prisma generate
       - name: Run migrations on test database
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5433/nestjs_starter_test?schema=starter
