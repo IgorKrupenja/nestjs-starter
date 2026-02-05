@@ -20,5 +20,8 @@ runs:
       shell: bash
     - name: Run extra command
       if: ${{ inputs.command != '' }}
-      run: ${{ inputs.command }}
+      # Use env var to prevent script injection
+      env:
+        COMMAND: ${{ inputs.command }}
+      run: $COMMAND
       shell: bash
